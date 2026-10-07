@@ -1,0 +1,29 @@
+# Fly.io config for the worker (docs/01 §8, docs/09 M5).
+# Deploy from the repo root: fly deploy (the Dockerfile builds the image).
+# Secrets: fly secrets set WORKER_SHARED_SECRET=... CRAWL_DELAY_MS=750
+app = "uplayer-worker"
+primary_region = "fra"
+
+[build]
+
+[env]
+  PORT = "4310"
+
+[http_service]
+  internal_port = 4310
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/healthz"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"

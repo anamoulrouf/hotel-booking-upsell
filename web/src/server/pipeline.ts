@@ -27,12 +27,17 @@ import { observePackages, scanSignals } from "@/server/observe";
 import { callWorker, workerConfigured } from "@/server/worker-client";
 import { getLlmClient } from "@/server/llm/client";
 import { extractFactsWithLlm } from "@/server/llm/extract-facts";
+import { extractPackagesWithLlm } from "@/server/llm/extract-packages";
 import { pageTextForLlm } from "@/server/llm/sanitize";
+import { searchOtaListing, searchConfigured } from "@/server/search/ota";
 
 const CRAWL_DELAY_MS = Number(process.env.CRAWL_DELAY_MS ?? 750);
 const FETCH_TIMEOUT_MS = 10_000;
 const MAX_BYTES = 2_000_000;
 const PREVIEW_CRAWL_PAGES = 12; // phase 1 (docs/01 §2); /crawl-ext tops up to 25 later
+const CATEGORY_CANDIDATES = new Set([
+  "room_stay", "food_drink", "wellness", "family", "romance", "business", "local", "arrival",
+]);
 
 type StepState = "pending" | "running" | "done" | "failed" | "skipped";
 type Steps = Record<string, { state: StepState; ms?: number; error?: string }>;
@@ -304,7 +309,7 @@ export async function stepFacts(reportId: string): Promise<void> {
   await setStep(reportId, "facts", "done", { ms: Date.now() - t1 });
 }
 
-// ——— Step 3: fingerprints + heuristic packages ———
+// ——— Step 3: fingerprints + packages (LLM extraction, heuristic fallback) ———
 export async function stepPackages(reportId: string): Promise<void> {
   const t2 = Date.now();
   await setStep(reportId, "search", "running");
@@ -323,18 +328,55 @@ export async function stepPackages(reportId: string): Promise<void> {
       : []),
   ];
   if (techRows.length) await db.insert(detectedTech).values(techRows).onConflictDoNothing();
-  await setStep(reportId, "search", "skipped", { ms: Date.now() - t2, error: "OTA listing search lands in M3 (needs search API key)" });
+  await setStep(reportId, "search", "skipped", { ms: Date.now() - t2, error: "OTA listing search runs in the score step (Tavily)" });
 
   const t3 = Date.now();
   await setStep(reportId, "packages", "running");
   const crawledPages = await db
-    .select({ kind: pages.kind, textContent: pages.textContent })
+    .select({ url: pages.url, kind: pages.kind, textContent: pages.textContent })
     .from(pages)
     .where(eq(pages.reportId, reportId));
   const scan = observePackages(crawledPages);
+
+  // M3: LLM extraction first; the heuristic scan is the fallback (docs/03 §4).
+  const client = getLlmClient();
+  const llm = client ? await extractPackagesWithLlm(client, crawledPages.map((p) => ({ url: p.url, kind: p.kind, text: pageTextForLlm(p.textContent ?? "") }))) : null;
+
   // idempotent on retry
   await db.delete(packagesTable).where(eq(packagesTable.reportId, reportId));
-  if (scan.items.length) {
+
+  if (llm && llm.packages.length) {
+    const includedItems = llm.includedItems.map((i) => i.item.toLowerCase());
+    const rows = llm.packages.map((p) => ({
+      reportId,
+      kind: "found" as const,
+      name: p.name.slice(0, 120),
+      description: p.description ?? null,
+      priceMin: p.priceMin != null ? Math.round(p.priceMin) : null,
+      priceMax: p.priceMax != null ? Math.round(p.priceMax) : null,
+      currency: p.currency,
+      category: CATEGORY_CANDIDATES.has(p.category) ? p.category : guessCategory(p.name),
+      guestFit: null,
+      timing: null,
+      included:
+        p.included ||
+        includedItems.some((item) => p.name.toLowerCase().includes(item)),
+      source: "haiku",
+      sourceUrl: p.sourceUrl ?? null,
+      hasPhoto: p.hasPhoto,
+      hasPrice: p.hasPrice,
+      hasDescription: p.hasDescription,
+    }));
+    // name-dedupe (lowercase), ≤25 rows
+    const seen = new Set<string>();
+    const deduped = rows.filter((r) => {
+      const key = r.name.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).slice(0, 25);
+    await db.insert(packagesTable).values(deduped);
+  } else if (scan.items.length) {
     await db.insert(packagesTable).values(
       scan.items.map((item, i) => ({
         reportId,
@@ -352,6 +394,23 @@ export async function stepPackages(reportId: string): Promise<void> {
       })),
     );
   }
+
+  // hotelFacts back-fill (docs/03 §4): only still-null fields, idempotent
+  if (llm?.hotelFacts && (llm.hotelFacts.rooms != null || llm.hotelFacts.starRating != null)) {
+    const hotelIdRow = (await db.select({ id: reports.hotelId }).from(reports).where(eq(reports.id, reportId)).limit(1))[0];
+    const [hotelRow] = await db
+      .select({ roomCount: hotels.roomCount, starRating: hotels.starRating })
+      .from(hotels)
+      .where(eq(hotels.id, hotelIdRow.id));
+    await db
+      .update(hotels)
+      .set({
+        roomCount: hotelRow.roomCount ?? llm.hotelFacts.rooms ?? null,
+        starRating: hotelRow.starRating ?? llm.hotelFacts.starRating ?? null,
+      })
+      .where(eq(hotels.id, hotelIdRow.id));
+  }
+
   await setStep(reportId, "packages", "done", { ms: Date.now() - t3 });
 }
 
@@ -415,9 +474,19 @@ export async function stepScore(reportId: string): Promise<void> {
 
   const hotelIdRow = (await db.select({ id: reports.hotelId }).from(reports).where(eq(reports.id, reportId)).limit(1))[0];
   const [hotelRow] = await db
-    .select({ roomCount: hotels.roomCount, starRating: hotels.starRating })
+    .select({ roomCount: hotels.roomCount, starRating: hotels.starRating, name: hotels.name, city: hotels.city })
     .from(hotels)
     .where(eq(hotels.id, hotelIdRow.id));
+
+  // OTA search (docs/03 §1 data point 2): nightly rate feeds the price band —
+  // garbage or missing key ⇒ null ⇒ the $95 baseline band applies (labeled)
+  let nightlyRate: number | null = null;
+  let otaStar: number | null = null;
+  if (hotelRow?.name && searchConfigured()) {
+    const listing = await searchOtaListing({ name: hotelRow.name, city: hotelRow.city });
+    nightlyRate = listing?.nightlyRate ?? null;
+    otaStar = listing?.starRating ?? null;
+  }
 
   let missed: { low: number; high: number; capture: number; spend: number } | null = null;
   if (hotelRow?.roomCount) {
@@ -425,8 +494,8 @@ export async function stepScore(reportId: string): Promise<void> {
       rooms: hotelRow.roomCount,
       occupancy: DEFAULTS.occupancy,
       avgStayNights: DEFAULTS.avgStayNights,
-      nightlyRate: null, // OTA price lookup lands in M3; $95 baseline band applies (labeled)
-      starRating: hotelRow.starRating,
+      nightlyRate,
+      starRating: hotelRow.starRating ?? otaStar,
       takeRateLow: DEFAULTS.takeRateLow,
       takeRateHigh: DEFAULTS.takeRateHigh,
       scorePct: score.pct,

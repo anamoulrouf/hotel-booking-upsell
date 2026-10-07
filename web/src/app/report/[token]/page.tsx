@@ -398,8 +398,8 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
               </div>
               <p className="text-muted-foreground mt-6 border-t border-hairline/15 pt-4 text-xs leading-5">
                 Estimate. Defaults editable at unlock: {Math.round(DEFAULTS.occupancy * 100)}% occupancy,{" "}
-                {DEFAULTS.avgStayNights}-night stay. Hotel-specific prices not yet detected — OTA lookup lands in a
-                later build.
+                {DEFAULTS.avgStayNights}-night stay. Spend per booking is OTA-derived when we could match your
+                listing, otherwise the $95 industry baseline applies.
               </p>
             </div>
           ) : (
