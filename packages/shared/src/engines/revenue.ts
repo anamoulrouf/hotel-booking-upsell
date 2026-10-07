@@ -6,7 +6,11 @@ import { captureBands } from "./capture";
 /** Current-capture share of potential, from the scaled score (0–100). */
 export function captureRate(scorePct: number): number {
   const pct = Math.min(100, Math.max(0, scorePct));
-  const band = captureBands.find((b) => pct >= b.lo && pct <= b.hi) ?? captureBands[0];
+  // half-open bands (climbing) — the curve is continuous across boundaries
+  // (each band's hiCapture equals the next band's loCapture), so fractional
+  // scores that land past a band's hi resolve into the next band instead of
+  // falling through to F and extrapolating wild capture rates.
+  const band = captureBands.find((b) => pct <= b.hi) ?? captureBands[captureBands.length - 1];
   const span = band.hi - band.lo;
   const t = span === 0 ? 0 : (pct - band.lo) / span;
   return band.loCapture + t * (band.hiCapture - band.loCapture);

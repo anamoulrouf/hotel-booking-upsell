@@ -49,13 +49,17 @@ export function observePackages(pages: { kind: string | null; textContent: strin
       if (p.re.test(html) && !personalizationSignals.includes(p.signal)) personalizationSignals.push(p.signal);
     }
 
-    // Headings on offer-ish pages become candidate items; a nearby price marks them priced.
+    // Headings on offer-ish pages become candidate items; a nearby price marks
+    // them priced. Window starts at the raw match index — indexOf(name) can
+    // miss after tag-stripping collapses whitespace.
     const isOfferish = /offers|packages|experiences|dining|spa|activities|tours|faq/i.test(page.kind ?? "") || ITEM_HINTS.test(stripTags(html).slice(0, 2000));
     if (!isOfferish) continue;
 
-    const headings = [...html.matchAll(HEADING_RE)].map((m) => stripTags(m[1])).filter((t) => ITEM_HINTS.test(t));
-    for (const name of headings.slice(0, 12)) {
-      const window = html.slice(Math.max(0, html.indexOf(name)), html.indexOf(name) + 600);
+    for (const m of [...html.matchAll(HEADING_RE)].slice(0, 24)) {
+      const name = stripTags(m[1]);
+      if (!ITEM_HINTS.test(name)) continue;
+      const start = m.index ?? 0;
+      const window = html.slice(start, start + 600);
       const priceMatch = window.match(PRICE_RE);
       const price = priceMatch ? Number(priceMatch[1].replace(",", ".")) : undefined;
       const hasDescription = /<p[\s>]/i.test(window);

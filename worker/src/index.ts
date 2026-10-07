@@ -12,6 +12,10 @@ type Env = { Variables: { rawBody: string } };
 
 const app = new Hono<Env>();
 
+// healthz is unauthenticated — load balancers and Fly health checks cannot
+// sign requests; it must sit above the HMAC middleware.
+app.get("/healthz", (c) => c.json({ ok: true }));
+
 // HMAC over `timestamp.rawBody` — read the raw bytes once, stash for handlers.
 app.use("*", async (c, next) => {
   const secret = process.env.WORKER_SHARED_SECRET;
@@ -26,8 +30,6 @@ app.use("*", async (c, next) => {
   }
   await next();
 });
-
-app.get("/healthz", (c) => c.json({ ok: true }));
 
 const parseBody = (c: { get: (k: "rawBody") => string }): unknown => {
   try {

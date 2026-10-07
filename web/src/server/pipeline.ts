@@ -15,6 +15,10 @@ import {
   crawlResultSchema,
   mobileResultSchema,
   type PackageObservation,
+  CRAWL_UA,
+  classifyKind,
+  extractLinks,
+  fetchRobots,
 } from "@uplayer/shared";
 import { db } from "@/server/db";
 import { detectedTech, events, hotels, packages as packagesTable, pages, reports } from "@uplayer/shared/db";
@@ -26,19 +30,9 @@ const CRAWL_DELAY_MS = Number(process.env.CRAWL_DELAY_MS ?? 750);
 const FETCH_TIMEOUT_MS = 10_000;
 const MAX_BYTES = 2_000_000;
 const PREVIEW_CRAWL_PAGES = 12; // phase 1 (docs/01 §2); /crawl-ext tops up to 25 later
-const UA = "UpLayerReportBot/1.0 (+https://uplayer.agency/bot)";
 
 type StepState = "pending" | "running" | "done" | "failed" | "skipped";
 type Steps = Record<string, { state: StepState; ms?: number; error?: string }>;
-
-const PRIORITY: { re: RegExp; kind: string }[] = [
-  { re: /\/(offers|packages|experiences|activities|tours)/, kind: "offers" },
-  { re: /\/(faq|faqs|questions)/, kind: "faq" },
-  { re: /\/(rooms|suites|accommodation|stay)/, kind: "rooms" },
-  { re: /\/(dining|restaurant|food|bar)/, kind: "dining" },
-  { re: /\/(spa|wellness|gym|pool)/, kind: "spa" },
-  { re: /\/(about|story|contact)/, kind: "about" },
-];
 
 async function setStep(reportId: string, key: string, state: StepState, patch: { ms?: number; error?: string } = {}) {
   const [row] = await db.select({ steps: reports.steps }).from(reports).where(eq(reports.id, reportId));
@@ -71,13 +65,13 @@ async function getPagesHtml(reportId: string): Promise<string[]> {
   return rows.map((r) => r.textContent ?? "");
 }
 
-// ——— local fallback crawler (M1): robots-less fetch, priority pages, no render ———
+// ——— local fallback crawler (M1): fetch-only, robots-respecting, no render ———
 async function fetchPage(url: string): Promise<{ ok: true; text: string } | { ok: false; status?: number }> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
     const res = await fetch(url, {
-      headers: { "user-agent": UA, accept: "text/html,application/xhtml+xml,text/plain" },
+      headers: { "user-agent": CRAWL_UA, accept: "text/html,application/xhtml+xml,text/plain" },
       redirect: "follow",
       signal: controller.signal,
     });
@@ -90,27 +84,6 @@ async function fetchPage(url: string): Promise<{ ok: true; text: string } | { ok
   } finally {
     clearTimeout(timer);
   }
-}
-
-function extractLinks(html: string, base: URL): string[] {
-  const out = new Set<string>();
-  for (const m of html.matchAll(/href="([^"#]+)"/g)) {
-    try {
-      const u = new URL(m[1], base);
-      if (u.hostname.replace(/^www\./, "") !== base.hostname.replace(/^www\./, "")) continue;
-      if (u.protocol !== "http:" && u.protocol !== "https:") continue;
-      if (/\/(wp-admin|wp-login|cart|checkout|account)/.test(u.pathname)) continue;
-      out.add(u.origin + u.pathname);
-    } catch {
-      /* malformed href */
-    }
-  }
-  return [...out];
-}
-
-function classifyKind(path: string): string {
-  if (path === "/" ) return "home";
-  return PRIORITY.find((p) => p.re.test(path))?.kind ?? "page";
 }
 
 type Facts = {
@@ -166,9 +139,15 @@ function guessCategory(name: string): string {
   return "room_stay";
 }
 
-// ——— Step 1: crawl (worker-first, local fallback) ———
+// ——— Step 1: crawl (worker-first, robots-respecting local fallback) ———
 export async function stepCrawl(reportId: string): Promise<boolean> {
   const t0 = Date.now();
+  const fail = async (error: string, reason: string) => {
+    await setStep(reportId, "crawl_core", "failed", { ms: Date.now() - t0, error });
+    await setStatus(reportId, "failed");
+    await db.insert(events).values({ reportId, type: "report_failed", payload: { reason } });
+    return false;
+  };
   try {
     await setStatus(reportId, "crawling");
     await setStep(reportId, "crawl_core", "running");
@@ -184,6 +163,11 @@ export async function stepCrawl(reportId: string): Promise<boolean> {
     if (workerConfigured()) {
       const res = await callWorker("/crawl-core", { url: base.origin, maxPages: PREVIEW_CRAWL_PAGES }, crawlResultSchema);
       if (res) {
+        // the worker already checked robots — a disallowed site must never be
+        // re-crawled by the fallback (CLAUDE.md rule 3)
+        if (res.degraded.includes("robots:disallowed")) {
+          return fail("robots.txt disallows crawling this site — we won't read it.", "robots_disallowed");
+        }
         homeOk = res.pages.some((p) => classifyKind(new URL(p.url).pathname) === "home");
         for (const p of res.pages) {
           crawled.push({ url: p.url, kind: classifyKind(new URL(p.url).pathname), status: p.status, html: p.html, loadMs: p.loadMs });
@@ -196,30 +180,27 @@ export async function stepCrawl(reportId: string): Promise<boolean> {
     }
 
     if (!crawled.length) {
-      // local fallback (M1 fetch crawler): robots-less, no JS rendering
-      const robots = await fetchPage(`${base.origin}/robots.txt`);
+      // local fallback (M1 fetch crawler): no JS rendering, but robots-checked
+      const robots = await fetchRobots(base.origin);
+      if (robots.blockedAll || !robots.allowed("/")) {
+        return fail("robots.txt disallows crawling this site — we won't read it.", "robots_disallowed");
+      }
       const home = await fetchPage(base.origin);
       if (!home.ok) {
-        await setStep(reportId, "crawl_core", "failed", {
-          ms: Date.now() - t0,
-          error: `homepage unreachable${robots.ok ? "" : "; robots.txt also unreachable"}`,
-        });
-        await setStatus(reportId, "failed");
-        await setDegraded(reportId, degraded);
-        await db.insert(events).values({ reportId, type: "report_failed", payload: { reason: "unreachable" } });
-        return false;
+        return fail("homepage unreachable", "unreachable");
       }
       homeOk = true;
       crawled.push({ url: base.origin, kind: "home", status: 200, html: home.text.slice(0, MAX_BYTES), loadMs: 0 });
       const links = extractLinks(home.text, base);
       const picked: { url: string; kind: string }[] = [];
-      for (const rule of PRIORITY) {
+      for (const link of links) {
         if (picked.length >= PREVIEW_CRAWL_PAGES - 1) break;
-        const hit = links.find((l) => rule.re.test(l) && !picked.some((p) => p.url === l));
-        if (hit) picked.push({ url: hit, kind: rule.kind });
+        const kind = classifyKind(new URL(link).pathname);
+        if (kind !== "page" && !picked.some((p) => p.url === link)) picked.push({ url: link, kind });
       }
       for (const p of picked) {
-        await new Promise((r) => setTimeout(r, CRAWL_DELAY_MS));
+        if (!robots.allowed(new URL(p.url).pathname)) continue;
+        await new Promise((r) => setTimeout(r, robots.crawlDelayMs ?? CRAWL_DELAY_MS));
         const res = await fetchPage(p.url);
         if (res.ok) crawled.push({ url: p.url, kind: p.kind, status: 200, html: res.text.slice(0, MAX_BYTES), loadMs: 0 });
       }
@@ -243,10 +224,7 @@ export async function stepCrawl(reportId: string): Promise<boolean> {
     await setStep(reportId, "crawl_core", "done", { ms: Date.now() - t0 });
     return homeOk;
   } catch (err) {
-    await setStep(reportId, "crawl_core", "failed", { ms: Date.now() - t0, error: err instanceof Error ? err.message : String(err) });
-    await setStatus(reportId, "failed");
-    await db.insert(events).values({ reportId, type: "report_failed", payload: { reason: "crawl_error" } });
-    return false;
+    return fail(err instanceof Error ? err.message : String(err), "crawl_error");
   }
 }
 
@@ -436,6 +414,14 @@ export async function stepScore(reportId: string): Promise<void> {
   await setStep(reportId, "score", "done", { ms: Date.now() - t4 });
   await setStatus(reportId, "preview_ready");
   await db.insert(events).values({ reportId, type: "preview_seen", payload: { pages: htmls.length, score: score.total } });
+}
+
+// Failure marker for the Inngest path: when a step exhausts its retries the
+// error leaves the function — without this the report would poll forever.
+export async function markPipelineFailed(reportId: string, err: unknown): Promise<void> {
+  await setStep(reportId, "pipeline", "failed", { error: err instanceof Error ? err.message : String(err) });
+  await setStatus(reportId, "failed");
+  await db.insert(events).values({ reportId, type: "report_failed", payload: { reason: "pipeline_error" } });
 }
 
 // ——— composed path for inline dev runs (no Inngest key) ———

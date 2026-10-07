@@ -122,4 +122,14 @@ describe("captureRate anchors", () => {
     expect(captureRate(100)).toBeCloseTo(0.7, 5);
     expect(captureRate(45)).toBeCloseTo(0.3036, 3);
   });
+
+  // regression: fractional pct must resolve into the NEXT band (the curve is
+  // continuous), never fall through to the F band and extrapolate ~2× missed
+  it("fractional scores between bands interpolate continuously", () => {
+    expect(captureRate(84.44)).toBeCloseTo(0.7, 5); // top of B, not an F-band 0.425
+    expect(captureRate(54.44)).toBeCloseTo(0.394, 3); // just past D, resolving into C
+    expect(captureRate(69.5)).toBeCloseTo(0.5446, 3); // just past C, resolving into B
+    expect(captureRate(39.5)).toBeCloseTo(0.2446, 3); // just past F, resolving into D
+    expect(captureRate(84.44)).toBeGreaterThan(0.6); // the ~2× bug showed as 0.425
+  });
 });

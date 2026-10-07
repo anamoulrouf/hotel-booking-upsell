@@ -3,7 +3,7 @@
 // no targets) when the page can't be evaluated — the score degrades honestly.
 import { chromium } from "playwright";
 import type { MobileRequest, MobileResult } from "@uplayer/shared";
-import { CRAWL_UA } from "./ua";
+import { CRAWL_UA } from "@uplayer/shared";
 
 export async function mobileCheck(req: MobileRequest): Promise<MobileResult> {
   const browser = await chromium.launch();
