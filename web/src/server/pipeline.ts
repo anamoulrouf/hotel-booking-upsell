@@ -4,7 +4,7 @@
 // score — split into Inngest-grade steps that share state through the DB.
 // runPipeline() composes them for the inline dev path (no Inngest key).
 // LLM extraction, packages and OTA search land in M3 (docs/09-milestones.md).
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import {
   computeMissedRevenue,
   detectEngines,
@@ -28,6 +28,7 @@ import { callWorker, workerConfigured } from "@/server/worker-client";
 import { getLlmClient } from "@/server/llm/client";
 import { extractFactsWithLlm } from "@/server/llm/extract-facts";
 import { extractPackagesWithLlm } from "@/server/llm/extract-packages";
+import { generateIdeasWithLlm, genericIdeas } from "@/server/llm/generate-ideas";
 import { pageTextForLlm } from "@/server/llm/sanitize";
 import { searchOtaListing, searchConfigured } from "@/server/search/ota";
 
@@ -414,6 +415,60 @@ export async function stepPackages(reportId: string): Promise<void> {
   await setStep(reportId, "packages", "done", { ms: Date.now() - t3 });
 }
 
+// ——— Step 4.5: package ideas (sonnet; generic fallback, labeled) ———
+export async function stepIdeas(reportId: string): Promise<void> {
+  const t = Date.now();
+  await setStep(reportId, "ideas", "running");
+  const hotelIdRow = (await db.select({ id: reports.hotelId }).from(reports).where(eq(reports.id, reportId)).limit(1))[0];
+  const [hotelRow] = await db
+    .select({ name: hotels.name, city: hotels.city, starRating: hotels.starRating })
+    .from(hotels)
+    .where(eq(hotels.id, hotelIdRow.id));
+
+  const foundRows = await db
+    .select({ name: packagesTable.name, included: packagesTable.included })
+    .from(packagesTable)
+    .where(eq(packagesTable.reportId, reportId));
+  const foundNames = foundRows.filter((r) => !r.included).map((r) => r.name);
+  const includedItems = foundRows.filter((r) => r.included).map((r) => r.name);
+
+  const client = getLlmClient();
+  const ideas =
+    client && hotelRow
+      ? await generateIdeasWithLlm(client, {
+          name: hotelRow.name ?? "this hotel",
+          city: hotelRow.city,
+          starRating: hotelRow.starRating,
+          foundPackages: foundNames,
+          includedItems,
+          amenities: [],
+        })
+      : null;
+  const finalIdeas = ideas ?? genericIdeas();
+  const source = ideas ? "sonnet" : "generic-list";
+
+  // idempotent on retry — suggested rows only; found rows are untouched
+  await db
+    .delete(packagesTable)
+    .where(and(eq(packagesTable.reportId, reportId), eq(packagesTable.kind, "suggested")));
+  await db.insert(packagesTable).values(
+    finalIdeas.map((idea) => ({
+      reportId,
+      kind: "suggested" as const,
+      name: idea.name.slice(0, 120),
+      description: idea.oneLine,
+      priceMin: idea.priceLow != null ? Math.round(idea.priceLow) : null,
+      priceMax: idea.priceHigh != null ? Math.round(idea.priceHigh) : null,
+      currency: "USD",
+      category: idea.category,
+      guestFit: idea.guestFit ?? null,
+      timing: idea.timing ?? null,
+      source,
+    })),
+  );
+  await setStep(reportId, "ideas", "done", { ms: Date.now() - t });
+}
+
 // ——— Step 4: mobile check + deterministic score + missed revenue ———
 export async function stepScore(reportId: string): Promise<void> {
   const t4 = Date.now();
@@ -548,6 +603,7 @@ export async function runPipeline(reportId: string): Promise<void> {
     await stepFacts(reportId);
     await stepPackages(reportId);
     await stepScore(reportId);
+    await stepIdeas(reportId);
   } catch (err) {
     await setStep(reportId, "pipeline", "failed", { error: err instanceof Error ? err.message : String(err) });
     await setStatus(reportId, "failed");

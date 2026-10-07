@@ -1,4 +1,4 @@
-import { count, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { MonitorSmartphone, Plug, Server, Sparkles, UserRound, Wrench, Link2 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -9,6 +9,8 @@ import { db } from "@/server/db";
 import { CopyReportLink, ShareReportLink } from "@/components/report-actions";
 import { CtaButton } from "@/components/cta-button";
 import { StickyCta } from "@/components/sticky-cta";
+import { UnlockForm } from "@/components/unlock-form";
+import { RoiEditor } from "@/components/roi-editor";
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -69,6 +71,8 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
       id: reports.id,
       removedAt: reports.removedAt,
       createdAt: reports.createdAt,
+      unlocked: reports.unlocked,
+      inputs: reports.inputs,
       scoreTotal: reports.scoreTotal,
       scoreOutOf: reports.scoreOutOf,
       scoreGrade: reports.scoreGrade,
@@ -101,7 +105,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
     .select({ value: count() })
     .from(packagesTable)
     .innerJoin(reports, eq(packagesTable.reportId, reports.id))
-    .where(eq(reports.token, token));
+    .where(and(eq(reports.token, token), eq(packagesTable.kind, "found")));
   const tech = await db
     .select({ category: detectedTech.category, name: detectedTech.name, evidence: detectedTech.evidence })
     .from(detectedTech)
@@ -118,7 +122,19 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
       hasDescription: packagesTable.hasDescription,
     })
     .from(packagesTable)
-    .where(eq(packagesTable.reportId, row.id));
+    .where(and(eq(packagesTable.reportId, row.id), eq(packagesTable.kind, "found")));
+  const suggestedPackages = await db
+    .select({
+      name: packagesTable.name,
+      description: packagesTable.description,
+      priceMin: packagesTable.priceMin,
+      priceMax: packagesTable.priceMax,
+      guestFit: packagesTable.guestFit,
+      timing: packagesTable.timing,
+      source: packagesTable.source,
+    })
+    .from(packagesTable)
+    .where(and(eq(packagesTable.reportId, row.id), eq(packagesTable.kind, "suggested")));
 
   const engine = tech.find((t) => t.category === "engine");
   const upsellTools = tech.filter((t) => t.category === "upsell_tool");
@@ -412,6 +428,48 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           )}
         </section>
 
+        {/* 3. Your numbers, live — unlock-gated ROI editor (brief §7) */}
+        <section className="pt-12" data-testid="roi-section">
+          <SectionHead
+            title="Your numbers, live"
+            sub="Edit rooms, occupancy and stay length — payback and the 3-year math recompute instantly."
+          />
+          {row.unlocked ? (
+            <div className="bg-card border-hairline/20 shadow-upl-sm border p-5 md:p-6">
+              <RoiEditor
+                token={token}
+                rooms={row.hotel.roomCount ?? 40}
+                starRating={row.hotel.starRating}
+                initial={{
+                  occupancy: row.inputs.occupancy,
+                  avgStayNights: row.inputs.avgStayNights,
+                  currentUpsellRevenue: row.inputs.currentUpsellRevenue,
+                  buildPrice: row.inputs.buildPrice,
+                  carePlan: row.inputs.carePlan,
+                }}
+              />
+            </div>
+          ) : (
+            <div className="border-primary/15 bg-primary/[0.04] border p-6 md:p-8">
+              <div className="grid gap-8 lg:grid-cols-2">
+                <div>
+                  <h3 className="font-notch text-ink text-xl font-semibold">Unlock the live ROI editor — free</h3>
+                  <p className="text-body mt-2 text-sm font-light leading-[1.6]">
+                    Your rooms, occupancy and stay length recompute payback month and the 3-year
+                    UpLayer-vs-SaaS comparison on the spot. No credit card, no obligation.
+                  </p>
+                  <ul className="text-body mt-4 space-y-1.5 text-sm">
+                    <li>· Payback month on the build</li>
+                    <li>· 3-year revenue kept vs an upsell SaaS</li>
+                    <li>· Low / mid / high take-rate scenarios</li>
+                  </ul>
+                </div>
+                <UnlockForm token={token} suggestedRooms={row.hotel.roomCount} />
+              </div>
+            </div>
+          )}
+        </section>
+
         {/* 3. What we found */}
         <section className="pt-12">
           <SectionHead title="What we found" sub="Score by area, one fix each — lowest first." />
@@ -577,6 +635,70 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                 No sellable items spotted yet — the next build reads deeper (booking engine extras, OTA listings) and
                 drafts package ideas for your hotel type.
               </p>
+            </div>
+          )}
+        </section>
+
+        {/* 6. Packages you could sell — unlock-gated ideas (brief §8) */}
+        <section className="pt-12" data-testid="ideas-section">
+          <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
+            <div>
+              <h2 className="font-notch text-ink text-xl font-semibold md:text-2xl">
+                Packages you could sell<span className="text-brand">.</span>
+              </h2>
+              <p className="text-muted-foreground mt-1 text-sm font-light">
+                Drafted for your hotel type and location — never contradicting what we found.
+                Prices are suggested, set your own.
+              </p>
+            </div>
+            <span className="text-muted-foreground text-xs tabular-nums">{suggestedPackages.length} ideas</span>
+          </div>
+          {row.unlocked ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {suggestedPackages.map((idea) => (
+                <div key={idea.name} className="bg-card border-hairline/20 shadow-upl-sm border p-5">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h3 className="text-ink text-sm font-semibold">{idea.name}</h3>
+                    <span className="border-hairline/30 text-muted-foreground shrink-0 border px-2 py-0.5 text-[10px] font-normal uppercase tracking-[0.14em]">
+                      Suggested
+                    </span>
+                  </div>
+                  <p className="text-body mt-2 text-sm font-light leading-[1.6]">{idea.description}</p>
+                  <dl className="text-muted-foreground mt-4 space-y-1 border-t border-hairline/15 pt-3 text-xs">
+                    {idea.guestFit ? <div>fits: <span className="text-body">{idea.guestFit}</span></div> : null}
+                    {idea.timing ? <div>best timing: <span className="text-body">{idea.timing}</span></div> : null}
+                    {idea.priceMin != null ? (
+                      <div>
+                        suggested:{" "}
+                        <span className="text-ink font-semibold tabular-nums">
+                          ${idea.priceMin}
+                          {idea.priceMax != null && idea.priceMax !== idea.priceMin ? `–$${idea.priceMax}` : ""}
+                        </span>
+                      </div>
+                    ) : null}
+                  </dl>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="border-primary/15 bg-primary/[0.04] border p-6 md:p-8">
+              <div className="grid gap-8 lg:grid-cols-2">
+                <div>
+                  <h3 className="font-notch text-ink text-xl font-semibold">
+                    {suggestedPackages.length} package ideas, drafted for your hotel
+                  </h3>
+                  <p className="text-body mt-2 text-sm font-light leading-[1.6]">
+                    Unlock to see every idea with the pitch, guest fit, best timing and a suggested
+                    price range. Same unlock as the ROI editor — no credit card.
+                  </p>
+                  <ul className="text-muted-foreground mt-4 space-y-1 text-sm">
+                    {suggestedPackages.slice(0, 3).map((i) => (
+                      <li key={i.name}>· {i.name}</li>
+                    ))}
+                  </ul>
+                </div>
+                <UnlockForm token={token} suggestedRooms={row.hotel.roomCount} />
+              </div>
             </div>
           )}
         </section>

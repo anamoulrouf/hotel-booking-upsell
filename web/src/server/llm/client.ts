@@ -5,6 +5,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 
 export const LLM_MODEL = "claude-haiku-4-5"; // extraction model per CLAUDE.md
+export const GENERATE_MODEL = "claude-sonnet-5-5"; // copy + ideas per CLAUDE.md
 
 export function getLlmClient(): Anthropic | null {
   const apiKey = process.env.ANTHROPIC_API_KEY;
