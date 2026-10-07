@@ -70,22 +70,25 @@ export async function submitUrl(_prev: SubmitState, formData: FormData): Promise
   }
 
   // --- 30-day per-domain cache (A4): clone the latest reusable report ---
-  const [cached] = await db
-    .select()
-    .from(reports)
-    .innerJoin(hotels, eq(reports.hotelId, hotels.id))
-    .where(
-      and(
-        eq(hotels.domain, domain),
-        isNull(reports.removedAt),
-        gt(reports.expiresAt, new Date()),
-        inArray(reports.status, ["preview_ready", "ready"]),
-        // only reuse fully-scored reports — pre-scoring rows must re-crawl
-        isNotNull(reports.scoreTotal),
-      ),
-    )
-    .orderBy(desc(reports.createdAt))
-    .limit(1);
+  // E2E mode skips the cache so each run crawls the fixtures fresh.
+  const [cached] = process.env.E2E
+    ? []
+    : await db
+        .select()
+        .from(reports)
+        .innerJoin(hotels, eq(reports.hotelId, hotels.id))
+        .where(
+          and(
+            eq(hotels.domain, domain),
+            isNull(reports.removedAt),
+            gt(reports.expiresAt, new Date()),
+            inArray(reports.status, ["preview_ready", "ready"]),
+            // only reuse fully-scored reports — pre-scoring rows must re-crawl
+            isNotNull(reports.scoreTotal),
+          ),
+        )
+        .orderBy(desc(reports.createdAt))
+        .limit(1);
 
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
   let token: string;

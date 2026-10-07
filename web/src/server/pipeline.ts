@@ -25,6 +25,9 @@ import { detectedTech, events, hotels, packages as packagesTable, pages, reports
 import { computeScore } from "@uplayer/shared";
 import { observePackages, scanSignals } from "@/server/observe";
 import { callWorker, workerConfigured } from "@/server/worker-client";
+import { getLlmClient } from "@/server/llm/client";
+import { extractFactsWithLlm } from "@/server/llm/extract-facts";
+import { pageTextForLlm } from "@/server/llm/sanitize";
 
 const CRAWL_DELAY_MS = Number(process.env.CRAWL_DELAY_MS ?? 750);
 const FETCH_TIMEOUT_MS = 10_000;
@@ -63,6 +66,20 @@ async function getPagesHtml(reportId: string): Promise<string[]> {
     .from(pages)
     .where(eq(pages.reportId, reportId));
   return rows.map((r) => r.textContent ?? "");
+}
+
+// Test/dev override (docs/09 §5): FIXTURE_HOST_MAP="host=url,…" points test
+// domains at the local fixture servers so E2E never crawls external sites.
+// Unset in production — every real domain crawls https.
+function crawlOrigin(domain: string): string {
+  const map = process.env.FIXTURE_HOST_MAP;
+  if (map) {
+    for (const pair of map.split(",")) {
+      const [host, url] = pair.split("=");
+      if (host?.trim() === domain && url) return url.trim().replace(/\/$/, "");
+    }
+  }
+  return `https://${domain}`;
 }
 
 // ——— local fallback crawler (M1): fetch-only, robots-respecting, no render ———
@@ -154,7 +171,7 @@ export async function stepCrawl(reportId: string): Promise<boolean> {
 
     const domain = await getDomain(reportId);
     if (!domain) throw new Error("report row missing");
-    const base = new URL(`https://${domain}`);
+    const base = new URL(crawlOrigin(domain));
 
     const crawled: { url: string; kind: string; status: number; html: string; loadMs: number }[] = [];
     const degraded: string[] = [];
@@ -198,6 +215,13 @@ export async function stepCrawl(reportId: string): Promise<boolean> {
         const kind = classifyKind(new URL(link).pathname);
         if (kind !== "page" && !picked.some((p) => p.url === link)) picked.push({ url: link, kind });
       }
+      // the booking-engine page carries the engine fingerprint + the extras
+      // buy affordance (Dolli learning) — the worker's breadth crawl reaches
+      // it; the fallback must pick it explicitly
+      if (!picked.some((p) => /engine|book|rates|reserve|checkout/i.test(new URL(p.url).pathname))) {
+        const engineLink = links.find((l) => /engine|book|rates|reserve|checkout/i.test(new URL(l).pathname));
+        if (engineLink && picked.length < PREVIEW_CRAWL_PAGES - 1) picked.push({ url: engineLink, kind: "engine" });
+      }
       for (const p of picked) {
         if (!robots.allowed(new URL(p.url).pathname)) continue;
         await new Promise((r) => setTimeout(r, robots.crawlDelayMs ?? CRAWL_DELAY_MS));
@@ -228,7 +252,7 @@ export async function stepCrawl(reportId: string): Promise<boolean> {
   }
 }
 
-// ——— Step 2: facts (deterministic JSON-LD; LLM fallback lands in M3) ———
+// ——— Step 2: facts (JSON-LD first; Claude fills only what JSON-LD missed) ———
 export async function stepFacts(reportId: string): Promise<void> {
   const t1 = Date.now();
   await setStep(reportId, "facts", "running");
@@ -241,6 +265,29 @@ export async function stepFacts(reportId: string): Promise<void> {
       if (v != null && bag[k] == null) bag[k] = v;
     }
   }
+
+  // M3: LLM fallback for the fields structured data didn't state (docs/03 §2).
+  // Page text is sanitized before sending; the output is schema-stripped.
+  let method = "jsonld";
+  const missing =
+    merged.name == null || merged.roomCount == null || merged.city == null || merged.country == null;
+  const client = getLlmClient();
+  if (missing && client && htmls.length) {
+    try {
+      const llmFacts = await extractFactsWithLlm(
+        client,
+        htmls.map((html) => pageTextForLlm(html)),
+      );
+      const bag = merged as Record<string, string | number | undefined>;
+      for (const [k, v] of Object.entries(llmFacts)) {
+        if (v != null && bag[k] == null) bag[k] = v;
+      }
+      if (Object.keys(llmFacts).length) method = "jsonld+llm";
+    } catch {
+      // LLM unavailable or malformed output — deterministic facts stand alone
+    }
+  }
+
   const hotelIdRow = (await db.select({ id: reports.hotelId }).from(reports).where(eq(reports.id, reportId)).limit(1))[0];
   await db
     .update(hotels)
@@ -251,7 +298,7 @@ export async function stepFacts(reportId: string): Promise<void> {
       country: merged.country ?? null,
       starRating: merged.starRating ?? null,
       roomCount: merged.roomCount ?? null,
-      sourceFacts: { method: "jsonld", pages: String(htmls.length) },
+      sourceFacts: { method, pages: String(htmls.length) },
     })
     .where(eq(hotels.id, hotelIdRow.id));
   await setStep(reportId, "facts", "done", { ms: Date.now() - t1 });
@@ -325,7 +372,7 @@ export async function stepScore(reportId: string): Promise<void> {
   let mobile: { horizontalOverflow: boolean; tapTargetsOk: boolean; loadMs: number } | null = null;
   const degradedNotes: string[] = [];
   if (domain) {
-    const res = await callWorker("/mobile-check", { url: `https://${domain}` }, mobileResultSchema, 30_000);
+    const res = await callWorker("/mobile-check", { url: crawlOrigin(domain) }, mobileResultSchema, 30_000);
     if (res && res.ok) {
       mobile = { horizontalOverflow: res.horizontalOverflow, tapTargetsOk: res.tapTargetsOk, loadMs: res.loadMs };
     } else if (workerConfigured()) {
