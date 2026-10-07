@@ -1,0 +1,43 @@
+<!doctype html>
+<!-- Fixture A (docs/06 §2): schema.org Hotel JSON-LD, nav to priority pages,
+     brand color #7A1E2B. Crawled by the M2 worker (≤25 pages, robots respected). -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="theme-color" content="#7A1E2B" />
+    <title>Fixture Grand Hotel — a test hotel</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Hotel",
+        "name": "Fixture Grand Hotel",
+        "address": { "@type": "PostalAddress", "streetAddress": "1 Test Way", "addressLocality": "Testville" },
+        "starRating": { "@type": "Rating", "ratingValue": "5" },
+        "numberOfRooms": 46,
+        "checkinTime": "15:00",
+        "checkoutTime": "11:00",
+        "amenityFeature": [
+          { "@type": "LocationFeatureSpecification", "name": "Airport shuttle" },
+          { "@type": "LocationFeatureSpecification", "name": "Spa" }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Fixture Grand Hotel</h1>
+    <p>A five-star test hotel with a spa, seasonal dining and experiences on the water.</p>
+    <nav>
+      <a href="/rooms">Rooms</a>
+      <a href="/dining">Dining</a>
+      <a href="/spa">Spa</a>
+      <a href="/offers">Offers</a>
+      <a href="/faq">FAQ</a>
+      <a href="/about">About</a>
+      <a href="/directory">Directory</a>
+    </nav>
+    <h2>Stay in Testville</h2>
+    <img src="/img/lobby.jpg" alt="Lobby" />
+    <p>Forty-six rooms, one very patient test suite.</p>
+    <a href="http://rich-hotel.test:4311/engine/rates">Book now</a>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+node_modules/
+.next/
+.turbo/
+dist/
+out/
+coverage/
+playwright-report/
+test-results/
+.env
+.env.local
+.env.*.local
+*.tsbuildinfo
+.DS_Store
+.vercel
+.drizzle/
+.pgdata/
+.pgdata-embedded/
+
+# claude code local state
+.claude/settings.local.json

@@ -1,0 +1,29 @@
+# CI (docs/09 M2 exit): lint + typecheck + unit tests + worker crawl against
+# the fixture servers. E2E joins once a CI database exists (M5 staging).
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      # worker crawl tests need chromium (playwright) + the fixture servers
+      - run: pnpm --filter worker exec playwright install --with-deps chromium
+      - name: boot fixture servers
+        run: pnpm fixtures:serve &
+      - run: sleep 1
+      - run: pnpm test

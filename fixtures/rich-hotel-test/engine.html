@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- Fixture A booking engine (first hit only — 403s afterwards). SynXis
+     fingerprint + extras buy affordance, per docs/06 §2 / docs/03 §3. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Reservations — Fixture Grand Hotel</title>
+    <script src="https://be.synxis.com/sbe/js/sbe.js" defer></script>
+  </head>
+  <body>
+    <h1>Select your dates</h1>
+    <form onsubmit="return false">
+      <label for="in">Check-in</label><input id="in" type="date" />
+      <label for="out">Check-out</label><input id="out" type="date" />
+    </form>
+    <h2>Make your stay richer</h2>
+    <ul>
+      <li>Airport transfer — add to my booking · 48 per person</li>
+      <li>Late check-out — add to my booking · 30 per stay</li>
+    </ul>
+    <button type="button">Add to my booking</button>
+  </body>
+</html>

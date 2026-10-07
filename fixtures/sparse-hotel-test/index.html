@@ -1,0 +1,22 @@
+<!doctype html>
+<!-- Fixture B (docs/06 §2): JS-rendered, zero JSON-LD. The M1 fetch crawler
+     sees an empty page; the Playwright worker renders the injected content —
+     this is what makes the LLM extraction (M3) necessary. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sparse Bay Inn</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      document.getElementById("app").innerHTML = `
+        <h1>Sparse Bay Inn</h1>
+        <p>Twelve rooms over a quiet bay. Breakfast included in high season.</p>
+        <h2>Rooms</h2>
+        <p>Doubles from 90 per night.</p>
+        <a href="/rates">Rates</a>
+      `;
+    </script>
+  </body>
+</html>

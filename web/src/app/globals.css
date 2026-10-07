@@ -1,0 +1,189 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ————————————————————————————————————————————————————————————
+   UpLayer design system (upsell-research/docs/10-DESIGN.md)
+   Sharp orthogonal components · amber CTA discipline · navy bands
+   Stack Sans trio · layered oklab micro-shadows · dotted atmosphere
+   ———————————————————————————————————————————————————————————— */
+
+:root {
+  /* Type stacks — Stack Sans trio, self-hosted via next/font (layout.tsx sets --ff-*) */
+  --font-stack-notch: var(--ff-notch), "Stack Sans Notch", ui-sans-serif, system-ui, sans-serif;
+  --font-stack-headline: var(--ff-headline), "Stack Sans Headline", ui-sans-serif, system-ui, sans-serif;
+  --font-stack-text: var(--ff-text), "Stack Sans Text", ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+
+  /* Brand palette (measured) */
+  --upl-primary: #ff9e00;
+  --upl-on-primary: #222222;
+  --upl-canvas: #ffffff;
+  --upl-surface: #f0f4ff;
+  --upl-surface-alt: #020617;
+  --upl-ink: #0f172a;
+  --upl-body: #334155;
+  --upl-muted: #64748b;
+  --upl-hairline: #0f65f4;
+  --upl-success: #00b894;
+  --upl-neutral: #d1d3d7;
+  --upl-accent-1: #0b3da8;
+  --upl-accent-2: #14b8a6;
+  --upl-accent-3: #5a9aff;
+  --upl-accent-deep: #c27800; /* light-theme accent — used for grade C */
+
+  /* Layered micro-shadows (oklab, per spec) */
+  --shadow-upl-sm:
+    0 0 0 1px oklab(0.999994 0.0000455678 0.0000200868 / 0.2),
+    0 10px 15px -3px oklab(0.553484 -0.0356502 -0.22454 / 0.4),
+    0 4px 6px -4px oklab(0.553484 -0.0356502 -0.22454 / 0.4);
+  --shadow-upl-md:
+    0 10px 15px -3px oklab(0.553484 -0.0356502 -0.22454 / 0.25),
+    0 4px 6px -4px oklab(0.553484 -0.0356502 -0.22454 / 0.25);
+  --shadow-upl-lg: 0 8px 24px 0 rgba(15, 23, 42, 0.06);
+
+  /* shadcn token mapping → UpLayer palette */
+  --radius: 0rem;
+  --background: var(--upl-canvas);
+  --foreground: var(--upl-ink);
+  --card: var(--upl-surface);
+  --card-foreground: var(--upl-ink);
+  --popover: var(--upl-canvas);
+  --popover-foreground: var(--upl-ink);
+  --primary: var(--upl-primary);
+  --primary-foreground: var(--upl-on-primary);
+  --secondary: var(--upl-surface);
+  --secondary-foreground: var(--upl-ink);
+  --muted: var(--upl-surface);
+  --muted-foreground: var(--upl-muted);
+  --accent: var(--upl-body);
+  --accent-foreground: var(--upl-canvas);
+  --destructive: #b91c1c;
+  --destructive-foreground: #ffffff;
+  --border: var(--upl-neutral);
+  --input: var(--upl-neutral);
+  --ring: var(--upl-hairline);
+  --chart-1: var(--upl-primary);
+  --chart-2: var(--upl-hairline);
+  --chart-3: var(--upl-success);
+  --chart-4: var(--upl-accent-3);
+  --chart-5: var(--upl-accent-2);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ink: var(--upl-ink);
+  --color-body: var(--upl-body);
+  --color-surface-alt: var(--upl-surface-alt);
+  --color-hairline: var(--upl-hairline);
+  --color-success: var(--upl-success);
+  --color-brand: var(--upl-primary);
+  --color-on-primary: var(--upl-on-primary);
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --font-notch: var(--font-stack-notch);
+  --font-head: var(--font-stack-headline);
+  --font-text: var(--font-stack-text);
+  --shadow-upl-sm: var(--shadow-upl-sm);
+  --shadow-upl-md: var(--shadow-upl-md);
+  --shadow-upl-lg: var(--shadow-upl-lg);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    /* sharp orthogonal system — no rounding anywhere */
+    border-radius: 0;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-stack-text);
+    font-weight: 300;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-stack-headline);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  ::selection {
+    background: var(--upl-primary);
+    color: var(--upl-on-primary);
+  }
+}
+
+@layer utilities {
+  /* Display type — Notch; negative tracking only at hero scale (spec rule) */
+  .font-notch {
+    font-family: var(--font-stack-notch);
+  }
+  .tracking-display {
+    letter-spacing: -0.025em;
+  }
+
+  /* Hero atmosphere: dotted grid + blurred blue radial (max two layers, per spec) */
+  .bg-dot-grid {
+    background-image: radial-gradient(circle, rgb(209, 211, 215) 1.25px, rgba(0, 0, 0, 0) 1.25px);
+    background-size: 22px 22px;
+  }
+  .bg-blue-haze {
+    background: radial-gradient(rgba(15, 101, 244, 0.18), rgba(0, 0, 0, 0) 70%);
+    filter: blur(40px);
+  }
+
+  /* Load choreography — one orchestrated reveal, reduced-motion safe */
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .reveal-1 { animation-delay: 0.05s; }
+  .reveal-2 { animation-delay: 0.15s; }
+  .reveal-3 { animation-delay: 0.25s; }
+  .reveal-4 { animation-delay: 0.35s; }
+  @keyframes reveal-up {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; animation: none; }
+    html { scroll-behavior: auto; }
+  }
+}
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--upl-hairline);
+    outline-offset: 2px;
+  }
+}
+
+/* Hotel brand theming on report pages (doc 05 §4) — values validated at runtime */
+.hotel-theme {
+  --hotel-primary: var(--upl-primary);
+  --hotel-secondary: var(--upl-surface);
+  --hotel-font: inherit;
+}

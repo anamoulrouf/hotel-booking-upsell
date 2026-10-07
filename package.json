@@ -1,0 +1,31 @@
+{
+  "name": "uplayer",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "e2e": "pnpm --filter web e2e",
+    "fixtures:serve": "pnpm --filter @uplayer/fixtures serve",
+    "worker:dev": "pnpm --filter worker dev",
+    "db:generate": "pnpm --filter web db:generate",
+    "db:migrate": "pnpm --filter web db:migrate",
+    "db:up": "tsx scripts/dev-db.mts"
+  },
+  "devDependencies": {
+    "embedded-postgres": "17.5.0-beta.15",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "msw",
+      "protobufjs",
+      "unrs-resolver"
+    ]
+  }
+}
