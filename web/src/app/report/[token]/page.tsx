@@ -1,4 +1,5 @@
 import { count, eq } from "drizzle-orm";
+import { MonitorSmartphone, Plug, Server, Sparkles, UserRound, Wrench, Link2 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -275,40 +276,46 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
 
       {/* ——— The elaboration — each section sets expectations before its data ——— */}
       <div className="mx-auto max-w-6xl px-6 pb-24">
-        {/* 1. Start with these */}
+        {/* 1. Start with these — tinted pill-cards (sample-7 schedule rows) */}
         {topFixes.length > 0 && (
           <section className="pt-12" data-testid="action-panel">
             <SectionHead title="Start with these" sub="The three lowest-scored areas, highest impact first." />
             <div className="grid gap-4 md:grid-cols-3">
-              {topFixes.map((a, i) => (
-                <div
-                  key={a.area}
-                  className={`border p-5 ${i === 0 ? "border-hairline/40 bg-primary/[0.05]" : "border-hairline/20 bg-card"}`}
-                >
-                  <div className="flex items-baseline justify-between gap-3">
-                    <span className="text-sm font-semibold">
-                      {a.label ?? a.area}
-                      {i === 0 ? (
-                        <span className="text-brand ml-3 text-[10px] font-normal uppercase tracking-[0.14em]">
-                          Start here
-                        </span>
-                      ) : null}
-                    </span>
-                    <span
-                      className={`text-xs font-semibold tabular-nums ${
-                        a.points / (a.max || 1) < 0.4 ? "text-destructive" : "text-ink"
-                      }`}
-                    >
-                      {a.points}/{a.max}
-                    </span>
+              {topFixes.map((a, i) => {
+                const tint = i === 0 ? "bg-primary/[0.06]" : i === 1 ? "bg-hairline/[0.05]" : "bg-success/[0.06]";
+                const Icon = i === 0 ? Wrench : i === 1 ? MonitorSmartphone : UserRound;
+                return (
+                  <div key={a.area} className={`${tint} p-5`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="bg-ink text-white flex h-8 w-8 shrink-0 items-center justify-center">
+                        <Icon className="h-4 w-4" aria-hidden />
+                      </span>
+                      <span
+                        className={`text-xs font-semibold tabular-nums ${
+                          a.points / (a.max || 1) < 0.4 ? "text-destructive" : "text-ink"
+                        }`}
+                      >
+                        {a.points}/{a.max}
+                      </span>
+                    </div>
+                    <div className="mt-3">
+                      <span className="text-sm font-semibold">
+                        {a.label ?? a.area}
+                        {i === 0 ? (
+                          <span className="text-brand ml-3 text-[10px] font-normal uppercase tracking-[0.14em]">
+                            Start here
+                          </span>
+                        ) : null}
+                      </span>
+                      <p className="text-body mt-1.5 text-xs font-light leading-[1.6]">{a.finding}</p>
+                      <p className="text-body mt-1.5 text-xs font-normal leading-[1.6]">
+                        <span className="text-brand">Fix · </span>
+                        {a.fix}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-body mt-2 text-xs font-light leading-[1.6]">{a.finding}</p>
-                  <p className="text-body mt-1.5 text-xs font-normal leading-[1.6]">
-                    <span className="text-brand">Fix · </span>
-                    {a.fix}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         )}
@@ -317,7 +324,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
         <section className="pt-12">
           <SectionHead title="Where the estimate comes from" sub="The math behind the numbers above — every factor labeled." />
           {est ? (
-            <div className="bg-card border-hairline/20 shadow-upl-sm border p-5 md:p-6">
+            <div className="border-primary/15 bg-primary/[0.04] border p-5 md:p-6">
               <div className="grid gap-10 md:grid-cols-[1fr_1.3fr]">
                 <dl className="divide-hairline/15 self-start divide-y border-hairline/15 border-y text-sm">
                   <div className="flex items-baseline justify-between gap-6 py-3">
@@ -459,20 +466,24 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
         {/* 4. Your stack */}
         <section className="pt-12">
           <SectionHead title="Your stack" sub="What your public pages fingerprint as." />
-          <div className="bg-card border-hairline/20 shadow-upl-sm border px-5">
-            <ul className="divide-hairline/15 divide-y">
-              {[
-                { label: "Booking engine", value: engine?.name ?? null, sub: engine ? engine.evidence : "no fingerprint found", testid: "detected-engine" },
-                {
-                  label: "Upsell / guest tools",
-                  value: upsellTools.length ? upsellTools.map((t) => t.name).join(", ") : null,
-                  sub: upsellTools.length ? "scripts or subdomains" : "reach today is your own site only",
-                  testid: "detected-upsell",
-                },
-                { label: "Likely PMS", value: pms?.name ?? null, sub: pms ? pms.evidence : "not inferable from the engine", testid: "stack-pms" },
-                { label: "Manual payment link", value: manualPay?.name ?? null, sub: manualPay ? manualPay.evidence : "not found on public pages", testid: "stack-payment" },
-              ].map((s) => (
-                <li key={s.label} className="py-4">
+          <ul className="space-y-2">
+            {[
+              { icon: Plug, label: "Booking engine", value: engine?.name ?? null, sub: engine ? engine.evidence : "no fingerprint found", testid: "detected-engine" },
+              {
+                icon: Sparkles,
+                label: "Upsell / guest tools",
+                value: upsellTools.length ? upsellTools.map((t) => t.name).join(", ") : null,
+                sub: upsellTools.length ? "scripts or subdomains" : "reach today is your own site only",
+                testid: "detected-upsell",
+              },
+              { icon: Server, label: "Likely PMS", value: pms?.name ?? null, sub: pms ? pms.evidence : "not inferable from the engine", testid: "stack-pms" },
+              { icon: Link2, label: "Manual payment link", value: manualPay?.name ?? null, sub: manualPay ? manualPay.evidence : "not found on public pages", testid: "stack-payment" },
+            ].map((s) => (
+              <li key={s.label} className={`flex items-start gap-3 border p-4 ${s.value ? "border-transparent bg-hairline/[0.04]" : "border-transparent bg-border/20"}`}>
+                <span className="bg-ink text-white flex h-8 w-8 shrink-0 items-center justify-center">
+                  <s.icon className="h-4 w-4" aria-hidden />
+                </span>
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-body text-sm font-normal">{s.label}</span>
                     <span className={`text-sm font-normal ${s.value ? "text-ink" : "text-muted-foreground"}`} data-testid={s.testid}>
@@ -489,10 +500,10 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                       {s.value ? "Detected" : "None"}
                     </span>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+                </div>
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* 5. Packages */}
