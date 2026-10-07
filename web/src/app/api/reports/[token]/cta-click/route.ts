@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 import { events, reports } from "@uplayer/shared/db";
 import { db } from "@/server/db";
 
-const PLACEMENTS = new Set(["band", "sticky", "footer"]);
+const PLACEMENTS = new Set(["band", "sticky", "footer", "panel"]);
 
 export async function POST(req: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;

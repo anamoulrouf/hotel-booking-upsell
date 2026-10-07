@@ -119,18 +119,20 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
     .from(packagesTable)
     .where(eq(packagesTable.reportId, row.id));
 
-  const engine = tech.find((t) => t.category === "engine")?.name;
-  const upsellTools = tech.filter((t) => t.category === "upsell_tool").map((t) => t.name);
+  const engine = tech.find((t) => t.category === "engine");
+  const upsellTools = tech.filter((t) => t.category === "upsell_tool");
+  const pms = tech.find((t) => t.category === "pms");
+  const manualPay = tech.find((t) => t.category === "payment_link_manual");
   const pricedCount = foundPackages.filter((p) => p.hasPrice).length;
 
   // Findings worst-first: lowest score ratio leads, skipped areas trail.
-  // The top card gets the single amber tint — "start here" (sample-3 highlight pattern).
   const areas = [...(row.scoreBreakdown ?? [])].sort(
     (a, b) =>
       Number(a.skipped ?? false) - Number(b.skipped ?? false) ||
       a.points / (a.max || 1) - b.points / (b.max || 1),
   );
   const worstArea = areas.find((a) => !a.skipped);
+  const topFixes = areas.filter((a) => !a.skipped).slice(0, 3);
 
   // Revenue funnel — recomputed by the deterministic engine from stored inputs.
   // The LLM never computes money (CLAUDE.md rule 2); this is the same pure
@@ -161,7 +163,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
         </p>
       </div>
 
-      <div className="mx-auto max-w-5xl px-6 pb-24">
+      <div className="mx-auto max-w-6xl px-6 pb-24">
         {/* ——— Editorial header + actions (sample-3 greeting row) ——— */}
         <header className="pt-16 pb-12">
           <div className="flex flex-wrap items-end justify-between gap-6">
@@ -186,7 +188,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
               <p className="text-muted-foreground mt-3 text-sm font-normal">
                 {row.hotel.starRating ? `${row.hotel.starRating}★ · ` : ""}
                 {row.hotel.roomCount ? `${row.hotel.roomCount} rooms · ` : ""}
-                {engine ? `books via ${engine}` : "booking engine not detected"}
+                {engine ? `books via ${engine.name}` : "booking engine not detected"}
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -273,7 +275,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
               <Tag>Fingerprint</Tag>
             </div>
             <p className="font-notch text-ink mt-auto truncate pt-6 text-2xl font-semibold" data-testid="kpi-engine">
-              {engine ?? "Not detected"}
+              {engine?.name ?? "Not detected"}
             </p>
             <p className="text-muted-foreground mt-3 text-[11px] leading-4">
               {engine ? "detected in scripts and links" : "no fingerprint on public pages"}
@@ -282,7 +284,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
         </section>
 
         {/* ——— Verdict band: the conversion moment, right after the numbers ——— */}
-        <section className="bg-surface-alt text-white relative mt-14 overflow-hidden" id="cta-band" data-testid="cta-band">
+        <section className="bg-surface-alt text-white relative mt-6 overflow-hidden" id="cta-band" data-testid="cta-band">
           <div className="bg-dot-grid pointer-events-none absolute inset-0 opacity-[0.12]" aria-hidden />
           <div className="relative flex flex-col gap-6 p-8 md:flex-row md:items-center md:justify-between md:p-10">
             <div className="max-w-xl">
@@ -316,74 +318,12 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           </div>
         </section>
 
-        {/* ——— Findings: 2-col cards, worst-first with the single amber tint ——— */}
-        <section className="mt-14">
-          <div className="flex items-baseline justify-between">
-            <h2 className="font-notch text-ink text-2xl font-semibold">
-              What we found<span className="text-brand">.</span>
-            </h2>
-            <span className="text-muted-foreground text-xs">score by area, one fix each</span>
-          </div>
-          <ul className="mt-6 grid gap-4 md:grid-cols-2" data-testid="findings">
-            {areas.map((a) => {
-              const pct = a.skipped || !a.max ? 0 : Math.round((a.points / a.max) * 100);
-              const isWorst = worstArea != null && a.area === worstArea.area;
-              return (
-                <li
-                  key={a.area}
-                  className={`border p-5 ${
-                    isWorst ? "border-hairline/40 bg-primary/[0.04]" : "border-hairline/20 bg-card"
-                  }`}
-                >
-                  <div className="flex items-baseline justify-between gap-4">
-                    <span className="text-sm font-semibold">
-                      {a.label ?? a.area}
-                      {isWorst ? (
-                        <span className="text-brand ml-3 text-[10px] font-normal uppercase tracking-[0.14em]">
-                          Start here
-                        </span>
-                      ) : null}
-                    </span>
-                    <span className={`text-sm font-normal tabular-nums ${a.skipped ? "text-muted-foreground" : "text-ink"}`}>
-                      {a.skipped ? "not scored" : `${a.points}/${a.max}`}
-                    </span>
-                  </div>
-                  {/* score bar — ink monochrome, neutral track, sharp ends */}
-                  <div className="bg-border/30 mt-3 h-1 w-full">
-                    <div
-                      className={`h-full ${a.skipped ? "bg-transparent" : "bg-ink/85"}`}
-                      style={{ width: `${pct}%` }}
-                      role="img"
-                      aria-label={
-                        a.skipped
-                          ? `${a.label ?? a.area}: not scored`
-                          : `${a.label ?? a.area}: ${a.points} of ${a.max} points`
-                      }
-                    />
-                  </div>
-                  <p className="text-body mt-3 text-sm font-light leading-[1.6]">{a.finding}</p>
-                  <p className="text-body mt-1.5 text-sm font-normal leading-[1.6]">
-                    <span className="text-brand">Fix · </span>
-                    {a.fix}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-
-        {/* ——— Your numbers: hero card — kv rail beside the funnel (sample-3) ——— */}
-        <section className="mt-14">
-          <div className="flex items-baseline justify-between">
-            <h2 className="font-notch text-ink text-2xl font-semibold">
-              Your numbers<span className="text-brand">.</span>
-            </h2>
-            <span className="text-muted-foreground text-xs">where the estimate comes from</span>
-          </div>
+        {/* ——— Hero row: numbers (⅔) + action panel (⅓) — sample-3 hero ——— */}
+        <section className="mt-6 grid gap-4 lg:grid-cols-3">
           {est ? (
-            <div className="bg-card border-hairline/20 shadow-upl-sm mt-6 border p-6 md:p-8">
+            <div className="bg-card border-hairline/20 shadow-upl-sm border p-6 md:p-8 lg:col-span-2">
+              {/* kv rail + funnel: sample-3's revenue-vs-forecast card */}
               <div className="grid gap-10 md:grid-cols-[1fr_1.3fr]">
-                {/* kv rail */}
                 <dl className="divide-hairline/15 self-start divide-y border-hairline/15 border-y text-sm">
                   <div className="flex items-baseline justify-between gap-6 py-3">
                     <dt className="text-body font-normal">Bookings a year</dt>
@@ -405,8 +345,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                   <div className="flex items-baseline justify-between gap-6 py-3">
                     <dt className="text-body font-normal">Spend per booking</dt>
                     <dd className="text-muted-foreground text-right text-xs">
-                      Revinate baseline ·{" "}
-                      <span className="text-ink font-semibold tabular-nums">${est.spend}</span>
+                      Revinate baseline · <span className="text-ink font-semibold tabular-nums">${est.spend}</span>
                     </dd>
                   </div>
                   <div className="flex items-baseline justify-between gap-6 py-3">
@@ -418,7 +357,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                   </div>
                 </dl>
 
-                {/* funnel stages — ink monochrome; amber marks missing only */}
+                {/* stages — ink monochrome; amber marks missing only */}
                 <div className="space-y-6">
                   <div>
                     <div className="flex items-baseline justify-between text-sm">
@@ -463,45 +402,131 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
               </p>
             </div>
           ) : (
-            <div className="bg-card border-hairline/20 mt-6 border p-6">
+            <div className="bg-card border-hairline/20 border p-6 lg:col-span-2">
               <p className="text-body text-sm font-light">
                 Room count wasn&apos;t found on your public pages. Add it at unlock and this section computes your
                 potential, what you already capture, and what&apos;s missing.
               </p>
             </div>
           )}
+
+          {/* Action panel — sample-3's schedule panel: the fixes, worst first */}
+          {topFixes.length > 0 && (
+            <div className="bg-card border-hairline/20 shadow-upl-sm flex flex-col border p-5" data-testid="action-panel">
+              <h2 className="text-ink text-sm font-semibold">Start with these</h2>
+              <p className="text-muted-foreground mt-1 text-xs">Lowest-scored areas first.</p>
+              <ul className="mt-4 space-y-2">
+                {topFixes.map((a, i) => (
+                  <li
+                    key={a.area}
+                    className={`border p-4 ${i === 0 ? "border-hairline/40 bg-primary/[0.05]" : "border-hairline/15"}`}
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="text-sm font-semibold">{a.label ?? a.area}</span>
+                      <span className={`text-xs tabular-nums ${a.points / (a.max || 1) < 0.4 ? "text-destructive" : "text-muted-foreground"}`}>
+                        {a.points}/{a.max}
+                      </span>
+                    </div>
+                    <p className="text-body mt-1.5 text-xs font-light leading-[1.5]">{a.fix}</p>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-auto pt-5">
+                <CtaButton
+                  token={token}
+                  placement="panel"
+                  variant="ink"
+                  size="sm"
+                  label="Book a walkthrough"
+                  testid="cta-panel-button"
+                  className="w-full"
+                />
+              </div>
+            </div>
+          )}
         </section>
 
-        {/* ——— Stack: detected / not-detected list with chips (sample-1 rows) ——— */}
-        <section className="mt-14">
-          <div className="flex items-baseline justify-between">
-            <h2 className="font-notch text-ink text-2xl font-semibold">
+        {/* ——— Findings row: bar rows (⅔) + stack card (⅓) ——— */}
+        <section className="mt-6 grid gap-4 lg:grid-cols-3">
+          <div className="bg-card border-hairline/20 shadow-upl-sm border p-6 lg:col-span-2">
+            <div className="flex items-baseline justify-between">
+              <h2 className="font-notch text-ink text-xl font-semibold">
+                What we found<span className="text-brand">.</span>
+              </h2>
+              <span className="text-muted-foreground text-xs">score by area, one fix each</span>
+            </div>
+            <ul className="mt-2" data-testid="findings">
+              {areas.map((a) => {
+                const pct = a.skipped || !a.max ? 0 : Math.round((a.points / a.max) * 100);
+                const isWorst = worstArea != null && a.area === worstArea.area;
+                return (
+                  <li key={a.area} className="border-hairline/15 border-b py-4 last:border-b-0">
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="text-sm font-semibold">
+                        {a.label ?? a.area}
+                        {isWorst ? (
+                          <span className="text-brand ml-3 text-[10px] font-normal uppercase tracking-[0.14em]">
+                            Start here
+                          </span>
+                        ) : null}
+                      </span>
+                      <span className={`text-sm font-normal tabular-nums ${a.skipped ? "text-muted-foreground" : "text-ink"}`}>
+                        {a.skipped ? "not scored" : `${a.points}/${a.max}`}
+                      </span>
+                    </div>
+                    {/* score bar — ink monochrome, neutral track, sharp ends */}
+                    <div className="bg-border/30 mt-2.5 h-1 w-full">
+                      <div
+                        className={`h-full ${a.skipped ? "bg-transparent" : "bg-ink/85"}`}
+                        style={{ width: `${pct}%` }}
+                        role="img"
+                        aria-label={
+                          a.skipped
+                            ? `${a.label ?? a.area}: not scored`
+                            : `${a.label ?? a.area}: ${a.points} of ${a.max} points`
+                        }
+                      />
+                    </div>
+                    <p className="text-body mt-2.5 text-sm font-light leading-[1.6]">{a.finding}</p>
+                    <p className="text-body mt-1 text-sm font-normal leading-[1.6]">
+                      <span className="text-brand">Fix · </span>
+                      {a.fix}
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          {/* Stack — detected / not-detected list with chips (sample-1 rows) */}
+          <div className="bg-card border-hairline/20 shadow-upl-sm flex flex-col border p-6">
+            <h2 className="font-notch text-ink text-xl font-semibold">
               Your stack<span className="text-brand">.</span>
             </h2>
-            <span className="text-muted-foreground text-xs">what your public pages fingerprint as</span>
-          </div>
-          <div className="bg-card border-hairline/20 mt-6 border">
-            <ul className="divide-hairline/15 divide-y">
+            <p className="text-muted-foreground mt-1 text-xs">what your public pages fingerprint as</p>
+            <ul className="divide-hairline/15 mt-4 divide-y border-hairline/15 border-y">
               {[
-                { label: "Booking engine", value: engine, sub: engine ? "in links, iframes or scripts" : "no fingerprint found", testid: "detected-engine" },
+                { label: "Booking engine", value: engine?.name ?? null, sub: engine ? engine.evidence : "no fingerprint found", testid: "detected-engine" },
                 {
                   label: "Upsell / guest tools",
-                  value: upsellTools.length ? upsellTools.join(", ") : null,
+                  value: upsellTools.length ? upsellTools.map((t) => t.name).join(", ") : null,
                   sub: upsellTools.length ? "scripts or subdomains" : "reach today is your own site only",
                   testid: "detected-upsell",
                 },
+                { label: "Likely PMS", value: pms?.name ?? null, sub: pms ? pms.evidence : "not inferable from the engine", testid: "stack-pms" },
+                { label: "Manual payment link", value: manualPay?.name ?? null, sub: manualPay ? manualPay.evidence : "not found on public pages", testid: "stack-payment" },
               ].map((s) => (
-                <li key={s.label} className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 px-5 py-4">
-                  <div>
-                    <div className="text-sm font-semibold">{s.label}</div>
-                    <div className="text-muted-foreground mt-0.5 text-xs">{s.sub}</div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span data-testid={s.testid} className={`text-sm font-normal ${s.value ? "text-ink" : "text-muted-foreground"}`}>
+                <li key={s.label} className="py-3.5">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-body text-sm font-normal">{s.label}</span>
+                    <span className={`text-sm font-normal ${s.value ? "text-ink" : "text-muted-foreground"}`} data-testid={s.testid}>
                       {s.value ?? "Not detected"}
                     </span>
+                  </div>
+                  <div className="mt-1 flex items-center justify-between gap-3">
+                    <span className="text-muted-foreground truncate text-xs">{s.sub}</span>
                     <span
-                      className={`px-2 py-0.5 text-[10px] font-normal uppercase tracking-[0.12em] ${
+                      className={`shrink-0 px-2 py-0.5 text-[10px] font-normal uppercase tracking-[0.12em] ${
                         s.value ? "bg-success/15 text-[#00695C]" : "bg-border/25 text-muted-foreground"
                       }`}
                     >
@@ -515,16 +540,16 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
         </section>
 
         {/* ——— Packages: inventory table (sample-1/2 tables) ——— */}
-        <section className="mt-14">
+        <section className="mt-6">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <h2 className="font-notch text-ink text-2xl font-semibold">
+            <h2 className="font-notch text-ink text-xl font-semibold">
               Packages we spotted<span className="text-brand">.</span>
             </h2>
             <span className="text-muted-foreground text-xs tabular-nums" data-testid="pages-found">
               {pagesFound} · {packagesFound}
             </span>
           </div>
-          <p className="text-muted-foreground mt-1.5 text-xs">
+          <p className="text-muted-foreground mt-1 text-xs">
             pages read · sellable items spotted on your public pages
           </p>
           {foundPackages.length ? (
@@ -581,7 +606,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
         </section>
 
         {/* CTA — brief §3 step 6 / §9.7; mailto until the scheduler lands */}
-        <section className="mt-14" data-testid="cta">
+        <section className="mt-6" data-testid="cta">
           <CtaButton
             token={token}
             placement="footer"
@@ -595,14 +620,8 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           </div>
         </section>
 
-        {/* Sticky walkthrough bar — middle zone of the page only */}
-        <StickyCta
-          token={token}
-          range={row.missedLow != null && row.missedHigh != null ? `${money(row.missedLow)}–${money(row.missedHigh)}` : null}
-        />
-
         {/* Next steps */}
-        <section className="mt-14 border-t border-hairline/15 pt-10" id="next-steps" data-testid="next-steps">
+        <section className="mt-6 border-t border-hairline/15 pt-10" id="next-steps" data-testid="next-steps">
           <p className="text-body max-w-xl text-sm font-light leading-[1.6]">
             Next, UpLayer drafts three sample guest pages in your brand, a live ROI editor and a PDF — arriving in
             milestones M2–M8. Package spotting above is a keyword scan (approximate); the Claude-powered extractor and
@@ -618,6 +637,12 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           </Link>
         </p>
       </div>
+
+      {/* Sticky walkthrough bar — middle zone of the page only */}
+      <StickyCta
+        token={token}
+        range={row.missedLow != null && row.missedHigh != null ? `${money(row.missedLow)}–${money(row.missedHigh)}` : null}
+      />
     </main>
   );
 }

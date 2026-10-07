@@ -15,7 +15,7 @@ export function CtaButton({
   className = "",
 }: {
   token: string;
-  placement: "band" | "sticky" | "footer";
+  placement: "band" | "sticky" | "footer" | "panel";
   variant?: "amber" | "ink";
   size?: "sm" | "lg";
   label?: string;
