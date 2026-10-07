@@ -200,23 +200,50 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
 
         {/* ——— KPI band: one ink anchor + white tiles (sample-2 × sample-3) ——— */}
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {/* anchor: upsell readiness */}
-          <div className="bg-surface-alt relative overflow-hidden p-6 text-white" data-testid="score-panel">
+          {/* anchor: upsell readiness — radial gauge */}
+          <div className="bg-surface-alt relative overflow-hidden p-5 text-white" data-testid="score-panel">
             <div className="bg-dot-grid pointer-events-none absolute inset-0 opacity-[0.12]" aria-hidden />
             <div className="relative flex h-full flex-col">
               <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Upsell readiness</h2>
-              <div className="mt-auto flex items-end gap-4 pt-6">
-                <div
-                  data-testid="grade-badge"
-                  className={`flex h-14 w-14 items-center justify-center text-2xl font-semibold ${
-                    GRADE_STYLES[row.scoreGrade ?? "F"] ?? GRADE_STYLES.F
-                  }`}
-                >
-                  {row.scoreGrade ?? "–"}
+              <div className="mt-auto flex items-center gap-4 pt-5">
+                <div className="relative h-16 w-16 shrink-0">
+                  <svg
+                    viewBox="0 0 64 64"
+                    className="h-16 w-16 -rotate-90"
+                    aria-hidden="true"
+                  >
+                    <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="6" />
+                    <circle
+                      cx="32"
+                      cy="32"
+                      r="28"
+                      fill="none"
+                      stroke="#FF9E00"
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      strokeDasharray={`${row.scoreOutOf ? ((row.scoreTotal ?? 0) / row.scoreOutOf) * 175.93 : 0} 175.93`}
+                    />
+                  </svg>
+                  <span
+                    data-testid="score-total"
+                    className="font-notch absolute inset-0 flex items-center justify-center text-xl font-semibold"
+                  >
+                    {row.scoreTotal ?? 0}
+                  </span>
+                  <span className="sr-only">
+                    Upsell score: {row.scoreTotal ?? 0} of {row.scoreOutOf ?? 100}
+                  </span>
                 </div>
-                <div className="pb-0.5" data-testid="score-total">
-                  <span className="font-notch text-4xl font-semibold">{row.scoreTotal ?? 0}</span>
-                  <span className="text-base font-light text-white/60"> / {row.scoreOutOf ?? 100} pts</span>
+                <div>
+                  <span
+                    data-testid="grade-badge"
+                    className={`inline-flex h-7 items-center justify-center px-2 text-sm font-semibold ${
+                      GRADE_STYLES[row.scoreGrade ?? "F"] ?? GRADE_STYLES.F
+                    }`}
+                  >
+                    {row.scoreGrade ?? "–"} grade
+                  </span>
+                  <p className="mt-1 text-xs font-light text-white/60">of {row.scoreOutOf ?? 100} pts</p>
                 </div>
               </div>
               <p className="mt-3 text-[11px] leading-4 text-white/60">
@@ -228,7 +255,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           </div>
 
           {/* missing revenue — white tile, amber mark under an ink figure */}
-          <div className="bg-card border-hairline/20 shadow-upl-sm flex flex-col border p-6" data-testid="missed-revenue">
+          <div className="bg-card border-hairline/20 shadow-upl-sm flex flex-col border p-5" data-testid="missed-revenue">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.14em]">
                 Missing revenue
@@ -253,7 +280,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           </div>
 
           {/* packages spotted */}
-          <div className="bg-card border-hairline/20 shadow-upl-sm flex flex-col border p-6">
+          <div className="bg-card border-hairline/20 shadow-upl-sm flex flex-col border p-5">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.14em]">
                 Packages spotted
@@ -267,7 +294,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           </div>
 
           {/* booking engine */}
-          <div className="bg-card border-hairline/20 shadow-upl-sm flex flex-col border p-6">
+          <div className="bg-card border-hairline/20 shadow-upl-sm flex flex-col border p-5">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.14em]">
                 Booking engine
@@ -321,9 +348,16 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
         {/* ——— Hero row: numbers (⅔) + action panel (⅓) — sample-3 hero ——— */}
         <section className="mt-6 grid gap-4 lg:grid-cols-3">
           {est ? (
-            <div className="bg-card border-hairline/20 shadow-upl-sm border p-6 md:p-8 lg:col-span-2">
+            <div className="bg-card border-hairline/20 shadow-upl-sm border p-5 md:p-6 lg:col-span-2">
+              {/* panel header */}
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.14em]">
+                  Revenue math
+                </h2>
+                <Tag>Estimate</Tag>
+              </div>
               {/* kv rail + funnel: sample-3's revenue-vs-forecast card */}
-              <div className="grid gap-10 md:grid-cols-[1fr_1.3fr]">
+              <div className="mt-5 grid gap-10 md:grid-cols-[1fr_1.3fr]">
                 <dl className="divide-hairline/15 self-start divide-y border-hairline/15 border-y text-sm">
                   <div className="flex items-baseline justify-between gap-6 py-3">
                     <dt className="text-body font-normal">Bookings a year</dt>
@@ -395,7 +429,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                   </div>
                 </div>
               </div>
-              <p className="text-muted-foreground mt-8 border-t border-hairline/15 pt-4 text-xs leading-5">
+              <p className="text-muted-foreground mt-6 border-t border-hairline/15 pt-4 text-xs leading-5">
                 Estimate. Defaults editable at unlock: {Math.round(DEFAULTS.occupancy * 100)}% occupancy,{" "}
                 {DEFAULTS.avgStayNights}-night stay. Hotel-specific prices not yet detected — OTA lookup lands in a
                 later build.
@@ -423,7 +457,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                   >
                     <div className="flex items-baseline justify-between gap-3">
                       <span className="text-sm font-semibold">{a.label ?? a.area}</span>
-                      <span className={`text-xs tabular-nums ${a.points / (a.max || 1) < 0.4 ? "text-destructive" : "text-muted-foreground"}`}>
+                      <span className={`text-xs font-semibold tabular-nums ${a.points / (a.max || 1) < 0.4 ? "text-destructive" : "text-ink"}`}>
                         {a.points}/{a.max}
                       </span>
                     </div>
@@ -448,7 +482,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
 
         {/* ——— Findings row: bar rows (⅔) + stack card (⅓) ——— */}
         <section className="mt-6 grid gap-4 lg:grid-cols-3">
-          <div className="bg-card border-hairline/20 shadow-upl-sm border p-6 lg:col-span-2">
+          <div className="bg-card border-hairline/20 shadow-upl-sm border p-5 lg:col-span-2">
             <div className="flex items-baseline justify-between">
               <h2 className="font-notch text-ink text-xl font-semibold">
                 What we found<span className="text-brand">.</span>
@@ -470,7 +504,11 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                           </span>
                         ) : null}
                       </span>
-                      <span className={`text-sm font-normal tabular-nums ${a.skipped ? "text-muted-foreground" : "text-ink"}`}>
+                      <span
+                        className={`text-sm font-normal tabular-nums ${
+                          a.skipped ? "text-muted-foreground" : a.points / (a.max || 1) < 0.4 ? "text-destructive" : "text-ink"
+                        }`}
+                      >
                         {a.skipped ? "not scored" : `${a.points}/${a.max}`}
                       </span>
                     </div>
@@ -499,7 +537,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           </div>
 
           {/* Stack — detected / not-detected list with chips (sample-1 rows) */}
-          <div className="bg-card border-hairline/20 shadow-upl-sm flex flex-col border p-6">
+          <div className="bg-card border-hairline/20 shadow-upl-sm flex flex-col border p-5">
             <h2 className="font-notch text-ink text-xl font-semibold">
               Your stack<span className="text-brand">.</span>
             </h2>
@@ -565,33 +603,43 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                   </tr>
                 </thead>
                 <tbody className="divide-hairline/15 divide-y">
-                  {foundPackages.map((p) => (
-                    <tr key={p.name}>
-                      <td className="text-ink px-5 py-3.5 font-normal">{p.name}</td>
-                      <td className="text-body px-5 py-3.5">{CATEGORY_LABELS[p.category ?? ""] ?? p.category ?? "—"}</td>
-                      <td className="px-5 py-3.5 tabular-nums">
-                        {p.priceMin != null ? (
-                          <span className="text-ink font-normal">
-                            {p.currency === "EUR" ? "€" : "$"}
-                            {p.priceMin}
+                  {foundPackages.map((p) => {
+                    const checks = [p.hasPhoto, p.hasPrice, p.hasDescription];
+                    const score = checks.filter(Boolean).length;
+                    const detail = ["photo", "price", "description"]
+                      .map((label, i) => (checks[i] ? `✓ ${label}` : `– ${label}`))
+                      .join(" · ");
+                    const pill =
+                      score === 3
+                        ? "bg-success/15 text-[#00695C]"
+                        : score === 2
+                          ? "bg-primary/10 text-[#8A5600]"
+                          : "bg-border/25 text-muted-foreground";
+                    return (
+                      <tr key={p.name}>
+                        <td className="text-ink px-5 py-3.5 font-normal">{p.name}</td>
+                        <td className="text-body px-5 py-3.5">{CATEGORY_LABELS[p.category ?? ""] ?? p.category ?? "—"}</td>
+                        <td className="px-5 py-3.5 tabular-nums">
+                          {p.priceMin != null ? (
+                            <span className="text-ink font-normal">
+                              {p.currency === "EUR" ? "€" : "$"}
+                              {p.priceMin}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <span
+                            title={detail}
+                            className={`inline-block px-2 py-0.5 text-[11px] font-normal ${pill}`}
+                          >
+                            {score === 3 ? "Complete" : score === 2 ? "Partial" : "Minimal"}
                           </span>
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <span className="text-muted-foreground text-xs">
-                          {[
-                            { ok: p.hasPhoto, label: "photo" },
-                            { ok: p.hasPrice, label: "price" },
-                            { ok: p.hasDescription, label: "description" },
-                          ]
-                            .map((x) => (x.ok ? `✓ ${x.label}` : `– ${x.label}`))
-                            .join(" · ")}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

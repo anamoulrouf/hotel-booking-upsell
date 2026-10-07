@@ -1,0 +1,11 @@
+- generic [active] [ref=f14e1]:
+  - main [ref=f14e2]:
+    - heading "Remove a report." [level=1] [ref=f14e3]
+    - paragraph [ref=f14e4]: Paste the report link (or the token in its URL). We delete the report, its cached copies, everything the crawl stored about your property, and the domain stays out of the 30-day cache.
+    - status [ref=f14e21]:
+      - paragraph [ref=f14e22]: Done — the report and its data are deleted.
+      - paragraph [ref=f14e23]: The domain is also excluded from the report cache. If anything was already emailed to someone, that copy is outside our control.
+    - link "← Back to Booking Upsell Report" [ref=f14e10] [cursor=pointer]:
+      - /url: /
+  - button "Open Next.js Dev Tools" [ref=f14e16] [cursor=pointer]
+  - alert [ref=f14e20]
