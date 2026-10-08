@@ -13,7 +13,9 @@ export async function GET(req: Request) {
     return new NextResponse(null, { status: 404 });
   }
 
-  const since = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000);
+  // events live and die with their report (30-day retention) — the honest
+  // window is 30 days, not the brief's aspirational 60
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   const countType = async (
     type: "report_started" | "report_failed" | "preview_seen" | "cta_clicked" | "unlocked" | "call_booked",
   ) => {
@@ -44,7 +46,7 @@ export async function GET(req: Request) {
 
   return NextResponse.json(
     {
-      windowDays: 60,
+      windowDays: 30,
       reportsStarted: started,
       previewsSeen: previews,
       ctaClicked: ctaClicks,

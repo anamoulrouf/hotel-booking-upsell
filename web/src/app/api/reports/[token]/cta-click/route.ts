@@ -11,9 +11,11 @@ const PLACEMENTS = new Set(["band", "sticky", "footer", "panel"]);
 export async function POST(req: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   let placement = "unknown";
+  let booked = false;
   try {
-    const body = (await req.json()) as { placement?: string };
+    const body = (await req.json()) as { placement?: string; booked?: boolean };
     if (body.placement && PLACEMENTS.has(body.placement)) placement = body.placement;
+    if (body.booked) booked = true;
   } catch {
     /* body optional */
   }
@@ -25,6 +27,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     .limit(1);
   if (!row || row.removedAt) return NextResponse.json({ error: "not found" }, { status: 404 });
 
-  await db.insert(events).values({ reportId: row.id, type: "cta_clicked", payload: { placement } });
+  // a scheduler booking is the funnel's call_booked; a plain click is the
+  // cta_clicked proxy (docs/09 M8 metrics)
+  await db.insert(events).values({
+    reportId: row.id,
+    type: booked ? "call_booked" : "cta_clicked",
+    payload: { placement },
+  });
   return new NextResponse(null, { status: 204 });
 }

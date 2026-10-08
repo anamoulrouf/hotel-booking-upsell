@@ -58,19 +58,25 @@ export async function generateIdeasWithLlm(
   ].join("\n");
 
   for (let attempt = 0; attempt < 2; attempt++) {
-    const res = await client.messages.create({
-      model: GENERATE_MODEL,
-      max_tokens: 3000,
-      temperature: 0.4,
-      system: SYSTEM,
-      messages: [{ role: "user", content: user }],
-    });
     let text = "";
-    for (const block of res.content) {
-      if (block.type === "text") {
-        text = block.text;
-        break;
+    try {
+      const res = await client.messages.create({
+        model: GENERATE_MODEL,
+        max_tokens: 3000,
+        temperature: 0.4,
+        system: SYSTEM,
+        messages: [{ role: "user", content: user }],
+      });
+      for (const block of res.content) {
+        if (block.type === "text") {
+          text = block.text;
+          break;
+        }
       }
+    } catch {
+      // API error/timeout ⇒ the generic fallback list (docs/03 §4.1) — a
+      // finished, scored report must never fail on its polish step
+      return null;
     }
     const ideas = parseIdeas(text);
     if (ideas) return ideas;

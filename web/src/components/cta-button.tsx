@@ -38,6 +38,18 @@ export function CtaButton({
     }
     const scheduler = schedulerUrl();
     if (scheduler) {
+      // booking intent through the scheduler — logged as call_booked so the
+      // funnel's unlock→call stage is real data (docs/09 M8)
+      try {
+        fetch(`/api/reports/${token}/cta-click`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ placement, booked: true }),
+          keepalive: true,
+        }).catch(() => {});
+      } catch {
+        /* ditto */
+      }
       window.open(`${scheduler}${scheduler.includes("?") ? "&" : "?"}report=${encodeURIComponent(token)}`, "_blank");
       return;
     }

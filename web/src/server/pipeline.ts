@@ -430,7 +430,43 @@ export async function stepPackages(reportId: string): Promise<void> {
 }
 
 // ——— Step 4.5: package ideas (sonnet; generic fallback, labeled) ———
+// Best-effort polish: the report is already preview_ready — an ideas failure
+// degrades to the generic list, never flips the report to failed.
 export async function stepIdeas(reportId: string): Promise<void> {
+  try {
+    await stepIdeasInner(reportId);
+  } catch (err) {
+    // fall back to the generic list rather than failing a scored report
+    try {
+      await db
+        .delete(packagesTable)
+        .where(and(eq(packagesTable.reportId, reportId), eq(packagesTable.kind, "suggested")));
+      await db.insert(packagesTable).values(
+        genericIdeas().map((idea) => ({
+          reportId,
+          kind: "suggested" as const,
+          name: idea.name.slice(0, 120),
+          description: idea.oneLine,
+          priceMin: idea.priceLow != null ? Math.round(idea.priceLow) : null,
+          priceMax: idea.priceHigh != null ? Math.round(idea.priceHigh) : null,
+          currency: "USD",
+          category: idea.category,
+          guestFit: idea.guestFit ?? null,
+          timing: idea.timing ?? null,
+          source: "generic-list",
+        })),
+      );
+      await setStep(reportId, "ideas", "done", {
+        error: `ideas generation failed (${err instanceof Error ? err.message : String(err)}) — generic list stored`,
+      });
+      return;
+    } catch {
+      await setStep(reportId, "ideas", "failed", { error: err instanceof Error ? err.message : String(err) });
+    }
+  }
+}
+
+async function stepIdeasInner(reportId: string): Promise<void> {
   const t = Date.now();
   await setStep(reportId, "ideas", "running");
   const hotelIdRow = (await db.select({ id: reports.hotelId }).from(reports).where(eq(reports.id, reportId)).limit(1))[0];
@@ -484,11 +520,19 @@ export async function stepIdeas(reportId: string): Promise<void> {
 }
 
 // ——— Step 4.6: sample guest pages (deterministic matcher + brand) ———
+// Best-effort polish: a failure degrades honestly, never fails the report.
 export async function stepGuestPages(reportId: string): Promise<void> {
   const t = Date.now();
   await setStep(reportId, "guests", "running");
-  await buildGuestPages(reportId);
-  await setStep(reportId, "guests", "done", { ms: Date.now() - t });
+  try {
+    await buildGuestPages(reportId);
+    await setStep(reportId, "guests", "done", { ms: Date.now() - t });
+  } catch (err) {
+    await setStep(reportId, "guests", "failed", {
+      ms: Date.now() - t,
+      error: err instanceof Error ? err.message : String(err),
+    });
+  }
 }
 
 // ——— Step 4: mobile check + deterministic score + missed revenue ———

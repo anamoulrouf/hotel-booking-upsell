@@ -11,4 +11,5 @@ export {
 // falls back to a mailto. Centralized so ops can repoint it without touching
 // page code.
 export const WALKTHROUGH_EMAIL = "hello@uplayer.agency";
-export const schedulerUrl = () => process.env.SCHEDULER_URL || "";
+// Client-readable: NEXT_PUBLIC_ vars inline into the browser bundle.
+export const schedulerUrl = () => process.env.NEXT_PUBLIC_SCHEDULER_URL || "";

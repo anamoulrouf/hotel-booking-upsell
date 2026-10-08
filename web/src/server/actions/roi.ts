@@ -5,7 +5,7 @@
 // engines consume them at render.
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { reports } from "@uplayer/shared/db";
+import { events, reports } from "@uplayer/shared/db";
 import { db } from "@/server/db";
 
 export type SaveState = { saved?: boolean; error?: string };
@@ -43,5 +43,9 @@ export async function saveRoiInputs(_prev: SaveState, formData: FormData): Promi
     .update(reports)
     .set({ inputs, updatedAt: new Date() })
     .where(eq(reports.id, report.id));
+
+  // funnel event (docs/09 M8 metrics): the lead engaged with the ROI editor
+  await db.insert(events).values({ reportId: report.id, type: "roi_edited", payload: {} });
+
   return { saved: true };
 }
