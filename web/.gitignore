@@ -1,0 +1,5 @@
+
+# local screenshots
+*.png
+!public/**/*.png
+!web/public/**/*.png
