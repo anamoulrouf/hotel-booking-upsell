@@ -485,7 +485,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                     <li>· Low / mid / high take-rate scenarios</li>
                   </ul>
                 </div>
-                <UnlockForm token={token} suggestedRooms={row.hotel.roomCount} />
+                <UnlockForm token={token} suggestedRooms={row.hotel.roomCount} collapsed />
               </div>
             </div>
           )}
@@ -792,7 +792,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                     ))}
                   </ul>
                 </div>
-                <UnlockForm token={token} suggestedRooms={row.hotel.roomCount} />
+                <UnlockForm token={token} suggestedRooms={row.hotel.roomCount} collapsed />
               </div>
             </div>
           )}

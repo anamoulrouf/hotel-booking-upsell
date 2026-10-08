@@ -7,9 +7,22 @@ import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { unlockReport } from "@/server/actions/unlock";
 
-export function UnlockForm({ token, suggestedRooms }: { token: string; suggestedRooms: number | null }) {
+export function UnlockForm({
+  token,
+  suggestedRooms,
+  collapsed = false,
+  ctaLabel = "Unlock the full report — free",
+}: {
+  token: string;
+  suggestedRooms: number | null;
+  collapsed?: boolean;
+  ctaLabel?: string;
+}) {
   const [state, action, pending] = useActionState(unlockReport, {});
   const router = useRouter();
+  // brief §3 step 3→4: the preview carries NO email field — the form appears
+  // only after the unlock click (E2E C14)
+  const [revealed, setRevealed] = useState(!collapsed);
 
   useEffect(() => {
     if (state.done) router.refresh();
@@ -17,8 +30,21 @@ export function UnlockForm({ token, suggestedRooms }: { token: string; suggested
 
   const input = "border-input text-ink placeholder:text-muted-foreground mt-1 h-11 w-full border bg-white px-3 text-sm font-normal transition-colors focus:border-hairline focus:outline-none";
 
+  if (!revealed) {
+    return (
+      <button
+        type="button"
+        data-testid="unlock-reveal"
+        onClick={() => setRevealed(true)}
+        className="bg-primary text-on-primary hover:brightness-95 inline-flex h-12 w-full items-center justify-center px-6 text-sm font-normal transition-[filter] sm:w-auto"
+      >
+        {ctaLabel}
+      </button>
+    );
+  }
+
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="space-y-4" data-testid="unlock-form">
       <input type="hidden" name="token" value={token} />
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
