@@ -3,3 +3,6 @@
 *.png
 !public/**/*.png
 !web/public/**/*.png
+
+# local screenshots
+*.png
