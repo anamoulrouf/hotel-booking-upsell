@@ -297,7 +297,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           </div>
 
           {/* the CTA — inside the hero, unmissable */}
-          <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+          <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center print:hidden">
             <CtaButton
               token={token}
               placement="band"
@@ -798,7 +798,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
         </section>
 
         {/* Closing CTA */}
-        <section className="pt-12" data-testid="cta">
+        <section className="pt-12 print:hidden" data-testid="cta">
           <CtaButton
             token={token}
             placement="footer"
@@ -813,7 +813,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
         </section>
 
         {/* Next steps */}
-        <section className="mt-12 border-t border-hairline/15 pt-10" id="next-steps" data-testid="next-steps">
+        <section className="mt-12 border-t border-hairline/15 pt-10 print:hidden" id="next-steps" data-testid="next-steps">
           <p className="text-body max-w-xl text-sm font-light leading-[1.6]">
             Next, UpLayer drafts three sample guest pages in your brand, a live ROI editor and a PDF — arriving in
             milestones M2–M8. Package spotting above is a keyword scan (approximate); the Claude-powered extractor and

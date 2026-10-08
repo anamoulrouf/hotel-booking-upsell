@@ -72,7 +72,7 @@ export function RoiEditor({
   return (
     <div className="space-y-6">
       {/* inputs */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 print:hidden">
         <label className="block">
           <span className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.12em]">Rooms</span>
           <input

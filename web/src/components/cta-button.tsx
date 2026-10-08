@@ -1,10 +1,11 @@
 "use client";
 
-import { WALKTHROUGH_EMAIL } from "@/lib/constants";
+import { WALKTHROUGH_EMAIL, schedulerUrl } from "@/lib/constants";
 
 // The walkthrough CTA — every placement fires cta_clicked (brief §11 funnel
-// events) then opens the walkthrough mailto. keepalive so the POST survives
-// the mailto handoff.
+// events) then opens the booking target: the scheduler URL when configured
+// (M7, logs call_booked server-side later), else a mailto fallback. keepalive
+// so the POST survives navigation.
 export function CtaButton({
   token,
   placement,
@@ -34,6 +35,11 @@ export function CtaButton({
       });
     } catch {
       /* ditto */
+    }
+    const scheduler = schedulerUrl();
+    if (scheduler) {
+      window.open(`${scheduler}${scheduler.includes("?") ? "&" : "?"}report=${encodeURIComponent(token)}`, "_blank");
+      return;
     }
     const subject = encodeURIComponent("Walkthrough of my upsell report");
     const body = encodeURIComponent("I'd like a 15-minute walkthrough of my report.");

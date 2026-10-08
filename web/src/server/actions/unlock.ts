@@ -7,8 +7,10 @@
 // rule 2). Consent notice is rendered with the form (brief §12).
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { after } from "next/server";
 import { events, hotels, leads, reports } from "@uplayer/shared/db";
 import { db } from "@/server/db";
+import { deliverUnlockedReport } from "@/server/delivery";
 
 export type UnlockState = { error?: string; done?: boolean };
 
@@ -59,6 +61,12 @@ export async function unlockReport(_prev: UnlockState, formData: FormData): Prom
     reportId: report.id,
     type: "unlocked",
     payload: { reUnlocked: report.unlocked },
+  });
+
+  // PDF → email → sales alert → CRM: best-effort, never blocks the unlock
+  // (docs/01 §5); after() keeps it off the response path (CLAUDE.md rule 5)
+  after(async () => {
+    await deliverUnlockedReport(report.id);
   });
 
   return { done: true };

@@ -6,6 +6,9 @@ export {
   SCORE_MAX,
 } from "@uplayer/shared";
 
-// Walkthrough CTA target (brief §3 step 6, §9.7) until the scheduler lands.
-// Centralized so the CEO/ops can repoint it without touching page code.
+// Walkthrough CTA target (brief §3 step 6, §9.7). When SCHEDULER_URL is set
+// (Cal.com et al.) the CTA books directly and logs call_booked; otherwise it
+// falls back to a mailto. Centralized so ops can repoint it without touching
+// page code.
 export const WALKTHROUGH_EMAIL = "hello@uplayer.agency";
+export const schedulerUrl = () => process.env.SCHEDULER_URL || "";

@@ -18,5 +18,6 @@ export const SCORE_MAX = 100;
 export * from "./db/schema";
 export * from "./engines";
 export * from "./contracts";
+export * from "./pdf-contract";
 export * from "./hmac";
 export * from "./crawl-common";

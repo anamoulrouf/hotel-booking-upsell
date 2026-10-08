@@ -34,7 +34,7 @@ export function StickyCta({ token, range }: { token: string; range: string | nul
     <div
       aria-label="Book a walkthrough"
       data-testid="sticky-cta"
-      className={`bg-surface-alt/95 fixed inset-x-0 bottom-0 z-50 border-t border-white/10 backdrop-blur transition-transform duration-300 motion-reduce:transition-none ${
+      className={`bg-surface-alt/95 fixed inset-x-0 bottom-0 z-50 border-t border-white/10 backdrop-blur print:hidden transition-transform duration-300 motion-reduce:transition-none ${
         visible ? "translate-y-0" : "translate-y-full"
       }`}
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}

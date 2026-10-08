@@ -47,6 +47,7 @@ export const eventType = pgEnum("event_type", [
   "pdf_opened",
   "roi_edited",
   "cta_clicked",
+  "call_booked",
 ]);
 
 export const hotels = pgTable("hotels", {

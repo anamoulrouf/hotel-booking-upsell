@@ -3,7 +3,8 @@
 // route when WORKER_SHARED_SECRET is set (unset = local dev). /pdf lands in M7.
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { crawlRequestSchema, crawlResultSchema, mobileRequestSchema, mobileResultSchema } from "@uplayer/shared";
+import { crawlRequestSchema, crawlResultSchema, mobileRequestSchema, mobileResultSchema, pdfRequestSchema } from "@uplayer/shared";
+import { chromium } from "playwright";
 import { crawlCore } from "./crawl";
 import { mobileCheck } from "./mobile";
 import { verifyRequest } from "./hmac";
@@ -62,8 +63,27 @@ app.post("/mobile-check", async (c) => {
   return c.json(mobileResultSchema.parse(await mobileCheck(parsed.data)));
 });
 
-// Render report ?print=1 → PDF → Blob key (M7)
-app.post("/pdf", (c) => c.json({ error: "pdf lands in a later milestone" }, 501));
+// Render a URL (the report's ?print=1 view) to PDF — headless Chromium,
+// A4, backgrounds on. Returns raw PDF bytes.
+app.post("/pdf", async (c) => {
+  const parsed = pdfRequestSchema.safeParse(parseBody(c));
+  if (!parsed.success) return c.json({ error: "bad request", issues: parsed.error.issues }, 400);
+
+  const browser = await chromium.launch();
+  try {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto(parsed.data.url, { waitUntil: "networkidle", timeout: 45_000 });
+    const pdf = await page.pdf({ format: "A4", printBackground: true, margin: { top: "12mm", bottom: "12mm", left: "10mm", right: "10mm" } });
+    return new Response(new Uint8Array(pdf), {
+      headers: { "content-type": "application/pdf", "content-disposition": 'inline; filename="report.pdf"' },
+    });
+  } catch (err) {
+    return c.json({ error: "render failed", detail: err instanceof Error ? err.message : String(err) }, 500);
+  } finally {
+    await browser.close();
+  }
+});
 
 const port = Number(process.env.PORT ?? 4310);
 serve({ fetch: app.fetch, port }, () => {
