@@ -14,6 +14,7 @@ import {
   extractLinksWithText,
   extractLinks,
   fetchRobots,
+  pathSegment,
   pickEngineLink,
 } from "@uplayer/shared";
 
@@ -54,11 +55,15 @@ export async function crawlCore(
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     // the cap bounds fetch attempts (success or not) — that's the politeness
-    // and time budget; only 200s enter pages[]
+    // and time budget; only 200s enter pages[]. Per first-level section:
+    // ≤2 pages (docs/03 §1 — one deep branch must not starve the others)
     let fetched = 0;
+    const perSection = new Map<string, number>();
     while (priorityQueue.length + breadthQueue.length > 0 && fetched < req.maxPages) {
       const next = priorityQueue.shift() ?? breadthQueue.shift()!;
       const u = new URL(next);
+      const seg = pathSegment(u.pathname);
+      if (seg && (perSection.get(seg) ?? 0) >= 2) continue; // skip without fetching
       if (!robots.allowed(u.pathname)) continue;
 
       const t0 = Date.now();
@@ -76,6 +81,7 @@ export async function crawlCore(
       }
       const loadMs = Date.now() - t0;
       fetched += 1;
+      perSection.set(seg, (perSection.get(seg) ?? 0) + 1);
 
       if (status === 401 || status === 403) {
         if (/engine|book|rates|reserve|checkout/i.test(u.pathname)) engineBlocked = true;

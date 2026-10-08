@@ -32,6 +32,11 @@ export function canonicalUrl(url: string): string {
   }
 }
 
+// first-level path segment — the unit of the per-section crawl cap
+export function pathSegment(pathname: string): string {
+  return pathname.split("/").filter(Boolean)[0] ?? "";
+}
+
 export function extractLinksWithText(
   html: string,
   base: URL,
@@ -42,6 +47,7 @@ export function extractLinksWithText(
     try {
       const u = new URL(m[1], base);
       if (!/^https?:$/i.test(u.protocol)) continue;
+      if (ASSET_RE.test(u.pathname)) continue;
       // image-only links carry their intent in alt/title — append so the
       // engine picker can see "Book" on an <img>-based anchor
       const alts = [...m[2].matchAll(/\b(?:alt|title)=["']([^"']+)["']/gi)].map((a) => a[1]);
@@ -69,6 +75,9 @@ function sameSite(a: string, b: string): boolean {
   return a.replace(/^www\./, "") === b.replace(/^www\./, "");
 }
 
+// binary/asset responses waste crawl slots — never queue them
+const ASSET_RE = /\.(png|jpe?g|gif|webp|svg|ico|css|js|mjs|json|xml|txt|pdf|zip|woff2?|ttf|mp4|webm)$/i;
+
 export function extractLinks(html: string, base: URL): string[] {
   const baseHost = base.hostname;
   const out = new Set<string>();
@@ -78,6 +87,7 @@ export function extractLinks(html: string, base: URL): string[] {
       if (!sameSite(u.hostname, baseHost)) continue;
       if (u.protocol !== "http:" && u.protocol !== "https:") continue;
       if (SKIP_PATH.test(u.pathname)) continue;
+      if (ASSET_RE.test(u.pathname)) continue;
       out.add(u.origin + u.pathname);
     } catch {
       /* malformed href */

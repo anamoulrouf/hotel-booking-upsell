@@ -21,6 +21,7 @@ import {
   extractLinksWithText,
   extractLinks,
   fetchRobots,
+  pathSegment,
   pickEngineLink,
 } from "@uplayer/shared";
 import { db } from "@/server/db";
@@ -222,10 +223,17 @@ export async function stepCrawl(reportId: string): Promise<boolean> {
       crawled.push({ url: base.origin, kind: "home", status: 200, html: home.text.slice(0, MAX_BYTES), loadMs: 0 });
       const links = extractLinks(home.text, base);
       const picked: { url: string; kind: string }[] = [];
+      const perSection = new Map<string, number>();
       for (const link of links) {
         if (picked.length >= PREVIEW_CRAWL_PAGES - 2) break;
-        const kind = classifyKind(new URL(link).pathname);
-        if (kind !== "page" && !picked.some((p) => p.url === link)) picked.push({ url: link, kind });
+        const linkUrl = new URL(link);
+        const seg = pathSegment(linkUrl.pathname);
+        if (seg && (perSection.get(seg) ?? 0) >= 2) continue; // one deep branch can't starve the others
+        const kind = classifyKind(linkUrl.pathname);
+        if (kind !== "page" && !picked.some((p) => p.url === link)) {
+          picked.push({ url: link, kind });
+          perSection.set(seg, (perSection.get(seg) ?? 0) + 1);
+        }
       }
       // the booking-engine page carries the engine fingerprint + extras
       // affordance (Dolli learning) — usually cross-origin and white-labeled,
