@@ -28,6 +28,7 @@ WORKER_URL=  WORKER_SHARED_SECRET=
 BLOB_READ_WRITE_TOKEN=
 APP_URL=                     # canonical origin, used in emails + PDF URLs
 CRAWL_DELAY_MS=750
+METRICS_TOKEN=              # guards /api/metrics (M8)
 LLM_BASE_URL=  SEARCH_BASE_URL=   # unset in prod; set to stubs in test
 ```
 

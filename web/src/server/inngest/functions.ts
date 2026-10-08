@@ -8,6 +8,7 @@ import {
   stepPackages,
   stepScore,
 } from "@/server/pipeline";
+import { deleteExpiredReports } from "@/server/inngest/cleanup";
 
 // Prod execution path (docs/01-architecture.md §2): one Inngest function,
 // one step per pipeline phase. Each step shares state through the DB and is
@@ -35,4 +36,14 @@ export const reportGenerate = inngest.createFunction(
   },
 );
 
-export const functions = [reportGenerate];
+// Retention cron (docs/02, docs/09 M8): expired reports are deleted daily.
+export const cleanupExpired = inngest.createFunction(
+  { id: "cleanup-expired-reports", retries: 2 },
+  { cron: "37 3 * * *" },
+  async ({ step }) => {
+    const result = await step.run("delete-expired", () => deleteExpiredReports());
+    return result;
+  },
+);
+
+export const functions = [reportGenerate, cleanupExpired];

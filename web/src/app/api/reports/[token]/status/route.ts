@@ -1,5 +1,5 @@
 // Token-scoped progress polling (docs/01-architecture.md §4).
-import { eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { hotels, reports } from "@uplayer/shared/db";
 import { db } from "@/server/db";
@@ -10,7 +10,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     .select({ status: reports.status, steps: reports.steps, degraded: reports.degraded, hotelName: hotels.name })
     .from(reports)
     .innerJoin(hotels, eq(reports.hotelId, hotels.id))
-    .where(eq(reports.token, token))
+    // 30-day retention: expired reports poll as missing
+    .where(and(eq(reports.token, token), gt(reports.expiresAt, new Date())))
     .limit(1);
 
   if (!row) return NextResponse.json({ error: "not found" }, { status: 404 });

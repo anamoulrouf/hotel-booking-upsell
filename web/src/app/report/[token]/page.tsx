@@ -1,4 +1,4 @@
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, gt } from "drizzle-orm";
 import { MonitorSmartphone, Plug, Server, Sparkles, UserRound, Wrench, Link2 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -93,7 +93,8 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
     })
     .from(reports)
     .innerJoin(hotels, eq(reports.hotelId, hotels.id))
-    .where(eq(reports.token, token))
+    // 30-day retention (docs/02): expired reports 404 like removed ones
+    .where(and(eq(reports.token, token), gt(reports.expiresAt, new Date())))
     .limit(1);
 
   if (!row || row.removedAt) notFound();

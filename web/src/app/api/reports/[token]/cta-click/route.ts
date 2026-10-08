@@ -1,7 +1,7 @@
 // Funnel instrumentation (brief §11): records cta_clicked with the placement.
 // Token-scoped (CLAUDE.md rule 4); a missing report 404s but the client ignores
 // responses — analytics must never block the CTA.
-import { eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { events, reports } from "@uplayer/shared/db";
 import { db } from "@/server/db";
@@ -21,7 +21,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
   const [row] = await db
     .select({ id: reports.id, removedAt: reports.removedAt })
     .from(reports)
-    .where(eq(reports.token, token))
+    .where(and(eq(reports.token, token), gt(reports.expiresAt, new Date())))
     .limit(1);
   if (!row || row.removedAt) return NextResponse.json({ error: "not found" }, { status: 404 });
 
