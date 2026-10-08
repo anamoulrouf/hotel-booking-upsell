@@ -2,7 +2,7 @@
 
 // Unlock lite form (brief §3 step 4): work email, name, role, room count
 // (prefilled from crawl). On success the report re-renders unlocked.
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { unlockReport } from "@/server/actions/unlock";
