@@ -1,5 +1,13 @@
 import { inngest } from "@/server/inngest/client";
-import { markPipelineFailed, stepCrawl, stepFacts, stepIdeas, stepPackages, stepScore } from "@/server/pipeline";
+import {
+  markPipelineFailed,
+  stepCrawl,
+  stepFacts,
+  stepGuestPages,
+  stepIdeas,
+  stepPackages,
+  stepScore,
+} from "@/server/pipeline";
 
 // Prod execution path (docs/01-architecture.md §2): one Inngest function,
 // one step per pipeline phase. Each step shares state through the DB and is
@@ -18,6 +26,7 @@ export const reportGenerate = inngest.createFunction(
       await step.run("packages", () => stepPackages(reportId));
       await step.run("score", () => stepScore(reportId));
       await step.run("ideas", () => stepIdeas(reportId));
+      await step.run("guests", () => stepGuestPages(reportId));
     } catch (err) {
       await step.run("mark-failed", () => markPipelineFailed(reportId, err));
       throw err;

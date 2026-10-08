@@ -4,13 +4,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TOOL_NAME, DEFAULTS, computeMissedRevenue } from "@uplayer/shared";
-import { detectedTech, hotels, packages as packagesTable, pages, reports } from "@uplayer/shared/db";
+import { detectedTech, hotels, packages as packagesTable, pages, reports, samplePages } from "@uplayer/shared/db";
 import { db } from "@/server/db";
 import { CopyReportLink, ShareReportLink } from "@/components/report-actions";
 import { CtaButton } from "@/components/cta-button";
 import { StickyCta } from "@/components/sticky-cta";
 import { UnlockForm } from "@/components/unlock-form";
 import { RoiEditor } from "@/components/roi-editor";
+import { GUEST_PROFILES } from "@/server/guest-pages";
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -73,6 +74,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
       createdAt: reports.createdAt,
       unlocked: reports.unlocked,
       inputs: reports.inputs,
+      brandAssets: hotels.brandAssets,
       scoreTotal: reports.scoreTotal,
       scoreOutOf: reports.scoreOutOf,
       scoreGrade: reports.scoreGrade,
@@ -135,6 +137,24 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
     })
     .from(packagesTable)
     .where(and(eq(packagesTable.reportId, row.id), eq(packagesTable.kind, "suggested")));
+
+  const guestPages = row.unlocked
+    ? await db.select().from(samplePages).where(eq(samplePages.reportId, row.id))
+    : [];
+  const packageById = new Map(
+    (
+      await db
+        .select({
+          id: packagesTable.id,
+          name: packagesTable.name,
+          priceMin: packagesTable.priceMin,
+          currency: packagesTable.currency,
+          kind: packagesTable.kind,
+        })
+        .from(packagesTable)
+        .where(eq(packagesTable.reportId, row.id))
+    ).map((p) => [p.id, p]),
+  );
 
   const engine = tech.find((t) => t.category === "engine");
   const upsellTools = tech.filter((t) => t.category === "upsell_tool");
@@ -470,7 +490,81 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           )}
         </section>
 
-        {/* 3. What we found */}
+        {/* 3. Your guests, three ways — sample pages (brief §6, unlocked) */}
+        {row.unlocked && (
+          <section className="pt-12" data-testid="guest-pages">
+            <SectionHead
+              title="Your guests, three ways"
+              sub="Sample pages in your brand — family, couple, business. Samples only: nothing is charged, buttons are inactive."
+            />
+            <div className="grid gap-4 lg:grid-cols-3">
+              {GUEST_PROFILES.map((profile) => {
+                const page = guestPages.find((g) => g.profile === profile.id);
+                const accent = row.brandAssets?.primary ?? "#FF9E00";
+                return (
+                  <div key={profile.id} className="bg-card border-hairline/20 shadow-upl-sm border" data-testid={`guest-${profile.id}`}>
+                    <div style={{ backgroundColor: accent }} className="h-1.5 w-full" aria-hidden />
+                    <div className="p-5">
+                      <h3 className="font-notch text-ink text-lg font-semibold">{profile.label}</h3>
+                      <p className="text-muted-foreground mt-1 text-xs">
+                        {profile.party} · {profile.nights} {profile.nights === 1 ? "night" : "nights"} · {profile.channel}
+                      </p>
+                      {page ? (
+                        <ul className="divide-hairline/15 mt-4 divide-y">
+                          {(page.picks ?? []).map((pick) => {
+                            const pkg = packageById.get(pick.packageId);
+                            const price = pkg?.priceMin ?? null;
+                            return (
+                              <li key={pick.packageId} className="py-3">
+                                <div className="flex items-baseline justify-between gap-3">
+                                  <span className="text-ink text-sm font-semibold">
+                                    {pkg?.name ?? "Package"}
+                                    {pkg?.kind === "suggested" ? (
+                                      <span className="text-muted-foreground ml-2 text-[10px] font-normal uppercase tracking-[0.12em]">
+                                        idea
+                                      </span>
+                                    ) : null}
+                                  </span>
+                                  {price != null ? (
+                                    <span className="text-body text-xs tabular-nums">
+                                      {pkg?.currency === "EUR" ? "€" : "$"}
+                                      {price}
+                                    </span>
+                                  ) : null}
+                                </div>
+                                <p className="text-body mt-1 text-xs font-light leading-[1.5]">{pick.perGuestLine}</p>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      ) : (
+                        <p className="text-muted-foreground mt-4 text-xs">Being drafted — refresh shortly.</p>
+                      )}
+                      {/* payment pair — rendered disabled by code, never the LLM (docs/03 §4.2) */}
+                      <div className="mt-4 space-y-1.5">
+                        <button
+                          type="button" disabled
+                          className="w-full cursor-not-allowed border border-transparent p-2 text-center text-xs font-normal opacity-60"
+                          style={{ backgroundColor: accent, color: "#222" }}
+                        >
+                          Pay now — save 10%
+                        </button>
+                        <button
+                          type="button" disabled
+                          className="border-border text-body w-full cursor-not-allowed border p-2 text-center text-xs font-normal opacity-60"
+                        >
+                          Reserve, pay at arrival
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* 4. What we found */}
         <section className="pt-12">
           <SectionHead title="What we found" sub="Score by area, one fix each — lowest first." />
           <div className="bg-card border-hairline/20 shadow-upl-sm border p-5 md:p-6">

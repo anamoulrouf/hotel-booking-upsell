@@ -15,6 +15,7 @@ const STEP_ORDER: { key: string; label: string; soon?: boolean }[] = [
   { key: "packages", label: "Finding your packages" },
   { key: "score", label: "Running your numbers" },
   { key: "ideas", label: "Drafting package ideas" },
+  { key: "guests", label: "Building your sample guest pages" },
 ];
 
 export function ProgressPoller({

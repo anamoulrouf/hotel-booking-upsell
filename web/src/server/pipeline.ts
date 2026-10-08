@@ -31,6 +31,7 @@ import { extractPackagesWithLlm } from "@/server/llm/extract-packages";
 import { generateIdeasWithLlm, genericIdeas } from "@/server/llm/generate-ideas";
 import { pageTextForLlm } from "@/server/llm/sanitize";
 import { searchOtaListing, searchConfigured } from "@/server/search/ota";
+import { buildGuestPages } from "@/server/guest-pages";
 
 const CRAWL_DELAY_MS = Number(process.env.CRAWL_DELAY_MS ?? 750);
 const FETCH_TIMEOUT_MS = 10_000;
@@ -469,6 +470,14 @@ export async function stepIdeas(reportId: string): Promise<void> {
   await setStep(reportId, "ideas", "done", { ms: Date.now() - t });
 }
 
+// ——— Step 4.6: sample guest pages (deterministic matcher + brand) ———
+export async function stepGuestPages(reportId: string): Promise<void> {
+  const t = Date.now();
+  await setStep(reportId, "guests", "running");
+  await buildGuestPages(reportId);
+  await setStep(reportId, "guests", "done", { ms: Date.now() - t });
+}
+
 // ——— Step 4: mobile check + deterministic score + missed revenue ———
 export async function stepScore(reportId: string): Promise<void> {
   const t4 = Date.now();
@@ -604,6 +613,7 @@ export async function runPipeline(reportId: string): Promise<void> {
     await stepPackages(reportId);
     await stepScore(reportId);
     await stepIdeas(reportId);
+    await stepGuestPages(reportId);
   } catch (err) {
     await setStep(reportId, "pipeline", "failed", { error: err instanceof Error ? err.message : String(err) });
     await setStatus(reportId, "failed");
