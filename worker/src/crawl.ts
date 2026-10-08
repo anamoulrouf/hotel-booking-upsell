@@ -7,11 +7,14 @@ import {
   type CrawlRequest,
   type CrawlResult,
   type CrawledPage,
+  BOOKING_ENGINES,
   CRAWL_UA,
   PRIORITY,
   canonicalUrl,
+  extractLinksWithText,
   extractLinks,
   fetchRobots,
+  pickEngineLink,
 } from "@uplayer/shared";
 
 const MAX_HTML_BYTES = 500_000;
@@ -91,11 +94,78 @@ export async function crawlCore(
         if (hit) priorityQueue.push(link);
         else breadthQueue.push(link);
       }
+      // branch cap: ≤2 pages per first-level section so one deep branch
+      // (e.g. /accommodation/rooms-suites/*) can't starve the other sections
+      const perPrefix = new Map<string, number>();
+      for (const p of [...priorityQueue, ...breadthQueue]) {
+        const seg = new URL(p).pathname.split("/").filter(Boolean)[0] ?? "";
+        perPrefix.set(seg, (perPrefix.get(seg) ?? 0) + 1);
+      }
+      for (const [seg, n] of perPrefix) {
+        if (n <= 2) continue;
+        let extra = n - 2;
+        const drop = (q: string[]) => {
+          for (let i = q.length - 1; i >= 0 && extra > 0; i--) {
+            if (new URL(q[i]).pathname.split("/").filter(Boolean)[0] === seg) {
+              q.splice(i, 1);
+              extra -= 1;
+            }
+          }
+        };
+        drop(priorityQueue);
+        drop(breadthQueue);
+      }
 
       if (priorityQueue.length + breadthQueue.length > 0 && fetched < req.maxPages) await sleep(delay);
     }
 
     if (fetched >= req.maxPages) degraded.push("cap:maxPages");
+
+    // one hop to the booking-engine page (docs/03 §1 data point 5) — engines
+    // live cross-origin and are often white-labeled (anchor text carries the
+    // intent; known engine markers carry the identity)
+    const uncrawledLinks = [
+      ...new Map(
+        pages
+          .flatMap((p) => extractLinksWithText(p.html, new URL(p.url)))
+          .map((l) => [l.url, l] as const),
+      ).values(),
+    ].filter(
+      (l) =>
+        !pages.some((p) => canonicalUrl(p.url) === canonicalUrl(l.url)) &&
+        !blocked.some((b) => canonicalUrl(b.url) === canonicalUrl(l.url)),
+    );
+    const engineLink = pickEngineLink(
+      uncrawledLinks,
+      BOOKING_ENGINES.flatMap((e) => e.patterns),
+    );
+    if (engineLink) {
+      const engineUrl = new URL(engineLink);
+      const engineRobots = await fetchRobots(engineUrl.origin);
+      if (!engineRobots.blockedAll && engineRobots.allowed(engineUrl.pathname)) {
+        await sleep(Math.max(delay, 500));
+        try {
+          const resp = await page.goto(engineLink, { waitUntil: "load", timeout: PAGE_TIMEOUT_MS });
+          await page.waitForTimeout(SCRIPT_SETTLE_MS);
+          const status = resp?.status() ?? 0;
+          if (status === 200) {
+            pages.push({
+              url: engineLink,
+              status,
+              html: (await page.content()).slice(0, MAX_HTML_BYTES),
+              title: (await page.title().catch(() => "")) || null,
+              loadMs: 0,
+            });
+          } else if (status === 401 || status === 403) {
+            engineBlocked = true;
+            blocked.push({ url: engineLink, status });
+          }
+        } catch {
+          /* engine page unreachable — fingerprints still run on crawled pages */
+        }
+      }
+    }
+
     return { pages, blocked, engineBlocked, degraded };
   } finally {
     await browser.close();

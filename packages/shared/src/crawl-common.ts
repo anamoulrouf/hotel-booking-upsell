@@ -23,19 +23,59 @@ const SKIP_PATH = /\/(wp-admin|wp-login|cart|checkout|account|calendar)/;
 export function canonicalUrl(url: string): string {
   try {
     const u = new URL(url);
+    // www and apex are the same site for dedupe (hotels redirect between them)
+    const host = u.hostname.replace(/^www\./, "");
     const p = u.pathname === "/" ? "/" : u.pathname.replace(/\/+$/, "");
-    return `${u.origin}${p}`;
+    return `${u.protocol}//${host}${p}`;
   } catch {
     return url;
   }
 }
 
+export function extractLinksWithText(
+  html: string,
+  base: URL,
+): { url: string; text: string }[] {
+  const baseHost = base.hostname;
+  const out = new Map<string, { url: string; text: string }>();
+  for (const m of html.matchAll(/<a\b[^>]*href=["']([^"'#]+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    try {
+      const u = new URL(m[1], base);
+      if (!/^https?:$/i.test(u.protocol)) continue;
+      // image-only links carry their intent in alt/title — append so the
+      // engine picker can see "Book" on an <img>-based anchor
+      const alts = [...m[2].matchAll(/\b(?:alt|title)=["']([^"']+)["']/gi)].map((a) => a[1]);
+      const text = (
+        m[2].replace(TAGS_RE, " ").replace(/\s+/g, " ").trim() +
+        " " +
+        alts.join(" ")
+      )
+        .trim()
+        .slice(0, 100);
+      const key = `${u.origin}${u.pathname}`;
+      if (!out.has(key)) out.set(key, { url: key, text });
+    } catch {
+      /* malformed href */
+    }
+  }
+  return [...out.values()];
+}
+
+const TAGS_RE = /<[^>]+>/g;
+
+// same-origin comparison that treats example.com and www.example.com as one
+// site — hotels routinely redirect to www and would otherwise starve the crawl
+function sameSite(a: string, b: string): boolean {
+  return a.replace(/^www\./, "") === b.replace(/^www\./, "");
+}
+
 export function extractLinks(html: string, base: URL): string[] {
+  const baseHost = base.hostname;
   const out = new Set<string>();
   for (const m of html.matchAll(/href="([^"#]+)"/g)) {
     try {
       const u = new URL(m[1], base);
-      if (u.origin !== base.origin) continue;
+      if (!sameSite(u.hostname, baseHost)) continue;
       if (u.protocol !== "http:" && u.protocol !== "https:") continue;
       if (SKIP_PATH.test(u.pathname)) continue;
       out.add(u.origin + u.pathname);
@@ -44,6 +84,20 @@ export function extractLinks(html: string, base: URL): string[] {
     }
   }
   return [...out];
+}
+
+// The hotel's booking-engine link (docs/03 §1 data point 5): usually
+// cross-origin and often white-labeled — the engine name is not in the URL,
+// so match the anchor text ("Book now", "Reserve", "Check availability")
+// and known engine URL markers. One hop, robots-checked by the caller.
+export function pickEngineLink(
+  links: { url: string; text: string }[],
+  enginePatterns: RegExp[],
+): string | null {
+  const byText = links.find((l) => /book|reserv|rates|check availability|extras/i.test(l.text));
+  if (byText) return byText.url;
+  const byUrl = links.find((l) => enginePatterns.some((re) => re.test(l.url)));
+  return byUrl?.url ?? null;
 }
 
 // ——— robots.txt (RFC 9309 subset) ———

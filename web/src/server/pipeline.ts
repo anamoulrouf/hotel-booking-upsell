@@ -15,10 +15,13 @@ import {
   crawlResultSchema,
   mobileResultSchema,
   type PackageObservation,
+  BOOKING_ENGINES,
   CRAWL_UA,
   classifyKind,
+  extractLinksWithText,
   extractLinks,
   fetchRobots,
+  pickEngineLink,
 } from "@uplayer/shared";
 import { db } from "@/server/db";
 import { detectedTech, events, hotels, packages as packagesTable, pages, reports } from "@uplayer/shared/db";
@@ -204,7 +207,7 @@ export async function stepCrawl(reportId: string): Promise<boolean> {
     }
 
     if (!crawled.length) {
-      // local fallback (M1 fetch crawler): no JS rendering, but robots-checked
+      // local fallback (M1 fetch crawler): no JS rendering, robots-checked
       const robots = await fetchRobots(base.origin);
       if (robots.blockedAll || !robots.allowed("/")) {
         return fail("robots.txt disallows crawling this site — we won't read it.", "robots_disallowed");
@@ -213,25 +216,35 @@ export async function stepCrawl(reportId: string): Promise<boolean> {
       if (!home.ok) {
         return fail("homepage unreachable", "unreachable");
       }
+      // fetchPage follows redirects (thedolli.com → www.thedolli.com) and the
+      // shared same-site link check treats www as the same site
       homeOk = true;
       crawled.push({ url: base.origin, kind: "home", status: 200, html: home.text.slice(0, MAX_BYTES), loadMs: 0 });
       const links = extractLinks(home.text, base);
       const picked: { url: string; kind: string }[] = [];
       for (const link of links) {
-        if (picked.length >= PREVIEW_CRAWL_PAGES - 1) break;
+        if (picked.length >= PREVIEW_CRAWL_PAGES - 2) break;
         const kind = classifyKind(new URL(link).pathname);
         if (kind !== "page" && !picked.some((p) => p.url === link)) picked.push({ url: link, kind });
       }
-      // the booking-engine page carries the engine fingerprint + the extras
-      // buy affordance (Dolli learning) — the worker's breadth crawl reaches
-      // it; the fallback must pick it explicitly
-      if (!picked.some((p) => /engine|book|rates|reserve|checkout/i.test(new URL(p.url).pathname))) {
-        const engineLink = links.find((l) => /engine|book|rates|reserve|checkout/i.test(new URL(l).pathname));
-        if (engineLink && picked.length < PREVIEW_CRAWL_PAGES - 1) picked.push({ url: engineLink, kind: "engine" });
+      // the booking-engine page carries the engine fingerprint + extras
+      // affordance (Dolli learning) — usually cross-origin and white-labeled,
+      // so match anchor text and known engine URL markers
+      const linksWithText = extractLinksWithText(home.text, base).filter(
+        (l) => !picked.some((p) => p.url === l.url),
+      );
+      const engineLink = pickEngineLink(
+        linksWithText,
+        BOOKING_ENGINES.flatMap((e) => e.patterns),
+      );
+      if (engineLink && picked.length < PREVIEW_CRAWL_PAGES - 1) {
+        picked.push({ url: engineLink, kind: "engine" });
       }
       for (const p of picked) {
-        if (!robots.allowed(new URL(p.url).pathname)) continue;
-        await new Promise((r) => setTimeout(r, robots.crawlDelayMs ?? CRAWL_DELAY_MS));
+        const pUrl = new URL(p.url);
+        const robotsFor = pUrl.origin === base.origin ? robots : await fetchRobots(pUrl.origin);
+        if (robotsFor.blockedAll || !robotsFor.allowed(pUrl.pathname)) continue;
+        await new Promise((r) => setTimeout(r, robotsFor.crawlDelayMs ?? CRAWL_DELAY_MS));
         const res = await fetchPage(p.url);
         if (res.ok) crawled.push({ url: p.url, kind: p.kind, status: 200, html: res.text.slice(0, MAX_BYTES), loadMs: 0 });
       }
