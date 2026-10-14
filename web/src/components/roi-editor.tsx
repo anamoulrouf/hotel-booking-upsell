@@ -109,7 +109,7 @@ export function RoiEditor({
       {/* scenarios — Low / Mid / High */}
       <div className="grid gap-3 md:grid-cols-3">
         {scenarios.map((s) => (
-          <div key={s.label} className="border-hairline/20 bg-background border p-4">
+          <div key={s.label} className="border-hairline/20 bg-background border p-4" data-testid={`scenario-${s.label.toLowerCase()}`}>
             <div className="flex items-baseline justify-between">
               <span className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.12em]">
                 {s.label} · {Math.round(s.rate * 100)}% take rate

@@ -16,9 +16,9 @@ export function CtaButton({
   className = "",
 }: {
   token: string;
-  placement: "band" | "sticky" | "footer" | "panel";
-  variant?: "amber" | "ink";
-  size?: "sm" | "lg";
+  placement: "band" | "sticky" | "footer" | "panel" | "sidebar";
+  variant?: "amber" | "ink" | "outline";
+  size?: "sm" | "md" | "lg";
   label?: string;
   testid: string;
   className?: string;
@@ -61,8 +61,11 @@ export function CtaButton({
   const look =
     variant === "amber"
       ? "bg-primary text-on-primary hover:brightness-95"
-      : "bg-ink text-white hover:bg-ink/90";
-  const sizing = size === "sm" ? "h-10 px-5 text-xs" : "h-14 px-8 text-sm";
+      : variant === "outline"
+        ? "border border-white/10 bg-white/5 text-white hover:bg-white/10 backdrop-blur-[4px]"
+        : "bg-ink text-white hover:bg-ink/90";
+  const sizing =
+    size === "sm" ? "h-10 px-5 text-xs" : size === "md" ? "h-12 px-6 text-sm" : "h-14 px-8 text-sm";
 
   return (
     <button

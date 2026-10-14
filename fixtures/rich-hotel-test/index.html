@@ -22,6 +22,10 @@
         ]
       }
     </script>
+    <!-- Engine widget embedded on the landing page (doc 07 I41): the fingerprint
+         must survive the engine page's 403-on-second-hit, so the marker lives here
+         too and A1 is deterministic regardless of fixture-server hit order. -->
+    <script src="https://be.synxis.com/sbe/js/widget.js" defer></script>
   </head>
   <body>
     <h1>Fixture Grand Hotel</h1>
