@@ -4,20 +4,25 @@ import "./globals.css";
 
 // Stack Sans trio — docs/10-DESIGN.md §3. next/font self-hosts them (no
 // third-party request, no layout shift); CSS vars feed the stacks in globals.css.
+// adjustFontFallback off — these fonts have no bundled override metrics, so
+// next/font logs "Failed to find font override values" on every build otherwise.
 const stackNotch = Stack_Sans_Notch({
   subsets: ["latin"],
   variable: "--ff-notch",
   display: "swap",
+  adjustFontFallback: false,
 });
 const stackHeadline = Stack_Sans_Headline({
   subsets: ["latin"],
   variable: "--ff-headline",
   display: "swap",
+  adjustFontFallback: false,
 });
 const stackText = Stack_Sans_Text({
   subsets: ["latin"],
   variable: "--ff-text",
   display: "swap",
+  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = {

@@ -232,7 +232,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
   const barPct = (v: number) => Math.max(4, Math.min(100, Math.round((v / (est?.potentialHigh || 1)) * 100)));
 
   return (
-    <>
+    <div className="min-h-dvh bg-[#03081F]">
       {/* Sample banner — required label (docs/08 §1); the design omits it, the
           claims rules don't — kept as its own band above the layout. */}
       <div className="bg-surface-alt text-white border-b border-white/10">
@@ -955,6 +955,6 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
           </footer>
         </div>
       </main>
-    </>
+    </div>
   );
 }
