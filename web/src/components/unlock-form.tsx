@@ -28,7 +28,7 @@ export function UnlockForm({
     if (state.done) router.refresh();
   }, [state.done, router]);
 
-  const input = "border-input text-ink placeholder:text-muted-foreground mt-1 h-11 w-full border bg-white px-3 text-sm font-normal transition-colors focus:border-hairline focus:outline-none";
+  const input = "border-input text-ink placeholder:text-muted-foreground mt-1 h-11 w-full border bg-white px-3 text-sm font-normal transition-colors focus:border-primary focus:outline-none";
 
   if (!revealed) {
     return (

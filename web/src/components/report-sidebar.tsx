@@ -44,13 +44,13 @@ export function ReportSidebar({
           <a href="#estimate" className="text-surface-alt font-bold hover:underline">
             Overview
           </a>
-          <a href="#unlock" className="text-body hover:text-hairline font-normal">
+          <a href="#unlock" className="text-body hover:text-primary font-normal">
             Full Report
           </a>
         </nav>
       </div>
 
-      <div className="from-[#1c47f1] to-surface-alt relative flex max-h-[320px] flex-1 flex-col items-center justify-center gap-6 overflow-clip border-t border-white/10 bg-gradient-to-b p-8">
+      <div className="from-[#0F65F4] to-surface-alt relative flex max-h-[320px] flex-1 flex-col items-center justify-center gap-6 overflow-clip border-t border-white/10 bg-gradient-to-b p-8">
         <div className="bg-dot-grid pointer-events-none absolute inset-x-0 top-0 h-60 opacity-[0.12]" aria-hidden />
         <div className="relative w-full text-center whitespace-nowrap">
           <p className="font-notch text-4xl font-semibold text-white">{missingRange ?? "—"}</p>

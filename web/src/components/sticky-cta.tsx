@@ -53,7 +53,7 @@ export function StickyCta({ token, range }: { token: string; range: string | nul
         <CtaButton
           token={token}
           placement="sticky"
-          variant="amber"
+          variant="primary"
           size="sm"
           label="Book a walkthrough"
           testid="cta-sticky-button"

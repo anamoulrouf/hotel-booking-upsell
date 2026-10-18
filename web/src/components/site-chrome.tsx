@@ -12,10 +12,10 @@ export function SiteNav() {
           <span className="text-body text-sm font-normal">/ Booking Upsell Report</span>
         </Link>
         <nav className="text-body flex items-center gap-8 text-[15px] font-normal">
-          <Link href="/#how" className="hover:text-hairline transition-colors">
+          <Link href="/#how" className="hover:text-primary transition-colors">
             How it works
           </Link>
-          <Link href="/#report" className="hover:text-hairline transition-colors">
+          <Link href="/#report" className="hover:text-primary transition-colors">
             What you get
           </Link>
           <a

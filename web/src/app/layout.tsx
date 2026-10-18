@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Stack_Sans_Headline, Stack_Sans_Notch, Stack_Sans_Text } from "next/font/google";
+import { Bricolage_Grotesque, Stack_Sans_Headline, Stack_Sans_Notch, Stack_Sans_Text } from "next/font/google";
 import "./globals.css";
 
-// Stack Sans trio — docs/10-DESIGN.md §3. next/font self-hosts them (no
-// third-party request, no layout shift); CSS vars feed the stacks in globals.css.
-// adjustFontFallback off — these fonts have no bundled override metrics, so
-// next/font logs "Failed to find font override values" on every build otherwise.
+// Stack Sans trio + Bricolage Grotesque (display alt, doc 10-DESIGN.md §3).
+// next/font self-hosts them (no third-party request, no layout shift); CSS vars
+// feed the stacks in globals.css. adjustFontFallback off — these fonts have no
+// bundled override metrics, so next/font logs "Failed to find font override
+// values" on every build otherwise.
 const stackNotch = Stack_Sans_Notch({
   subsets: ["latin"],
   variable: "--ff-notch",
@@ -24,6 +25,12 @@ const stackText = Stack_Sans_Text({
   display: "swap",
   adjustFontFallback: false,
 });
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--ff-bricolage",
+  display: "swap",
+  adjustFontFallback: false,
+});
 
 export const metadata: Metadata = {
   title: {
@@ -38,7 +45,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${stackNotch.variable} ${stackHeadline.variable} ${stackText.variable}`}>
+    <html
+      lang="en"
+      className={`${stackNotch.variable} ${stackHeadline.variable} ${stackText.variable} ${bricolage.variable}`}
+    >
       <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );

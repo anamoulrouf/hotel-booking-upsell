@@ -22,7 +22,7 @@ export function CopyReportLink({ className }: { className?: string }) {
       }}
       className={
         className ??
-        "border-border text-body hover:border-hairline hover:text-hairline inline-flex h-9 items-center gap-2 border px-4 text-xs font-normal transition-colors"
+        "border-border text-body hover:border-primary hover:text-primary inline-flex h-9 items-center gap-2 border px-4 text-xs font-normal transition-colors"
       }
     >
       {copied ? "Link copied" : "Copy report link"}
@@ -43,7 +43,7 @@ export function ShareReportLink({ className, label }: { className?: string; labe
       }}
       className={
         className ??
-        "text-body hover:text-hairline inline-flex h-9 items-center text-xs font-normal transition-colors"
+        "text-body hover:text-primary inline-flex h-9 items-center text-xs font-normal transition-colors"
       }
     >
       {label ?? "Send this to my team →"}

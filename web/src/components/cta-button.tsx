@@ -9,7 +9,7 @@ import { WALKTHROUGH_EMAIL, schedulerUrl } from "@/lib/constants";
 export function CtaButton({
   token,
   placement,
-  variant = "amber",
+  variant = "primary",
   size = "lg",
   label = "Book a 15-minute walkthrough",
   testid,
@@ -17,7 +17,7 @@ export function CtaButton({
 }: {
   token: string;
   placement: "band" | "sticky" | "footer" | "panel" | "sidebar";
-  variant?: "amber" | "ink" | "outline";
+  variant?: "primary" | "ink" | "outline";
   size?: "sm" | "md" | "lg";
   label?: string;
   testid: string;
@@ -59,7 +59,7 @@ export function CtaButton({
   };
 
   const look =
-    variant === "amber"
+    variant === "primary"
       ? "bg-primary text-on-primary hover:brightness-95"
       : variant === "outline"
         ? "border border-white/10 bg-white/5 text-white hover:bg-white/10 backdrop-blur-[4px]"

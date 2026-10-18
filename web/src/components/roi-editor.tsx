@@ -109,7 +109,7 @@ export function RoiEditor({
       {/* scenarios — Low / Mid / High */}
       <div className="grid gap-3 md:grid-cols-3">
         {scenarios.map((s) => (
-          <div key={s.label} className="border-hairline/20 bg-background border p-4" data-testid={`scenario-${s.label.toLowerCase()}`}>
+          <div key={s.label} className="border-hairline bg-background border p-4" data-testid={`scenario-${s.label.toLowerCase()}`}>
             <div className="flex items-baseline justify-between">
               <span className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.12em]">
                 {s.label} · {Math.round(s.rate * 100)}% take rate
@@ -119,7 +119,7 @@ export function RoiEditor({
               {money(s.roi.projectedYearly)}
             </p>
             <p className="text-muted-foreground text-xs">projected pre-arrival /yr</p>
-            <dl className="divide-hairline/15 mt-3 divide-y border-hairline/15 border-y text-xs">
+            <dl className="divide-hairline mt-3 divide-y border-hairline border-y text-xs">
               <div className="flex justify-between py-1.5">
                 <dt className="text-muted-foreground">Added /yr</dt>
                 <dd className="text-ink font-semibold tabular-nums">{money(s.roi.addedYearly)}</dd>

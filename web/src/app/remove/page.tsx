@@ -18,7 +18,7 @@ export default function RemovePage() {
       <div className="mt-10">
         <RemoveForm />
       </div>
-      <Link href="/" className="text-hairline mt-10 text-sm hover:underline">
+      <Link href="/" className="text-primary mt-10 text-sm hover:underline">
         ← Back to {`Booking Upsell Report`}
       </Link>
     </main>

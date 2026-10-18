@@ -37,7 +37,7 @@ export default function Home() {
               <SubmitForm />
               <p className="text-body mt-4 text-xs">
                 Public pages only · robots.txt respected · never books or submits forms ·{" "}
-                <Link href="/remove" className="text-hairline hover:underline">
+                <Link href="/remove" className="text-primary hover:underline">
                   removal requests
                 </Link>
               </p>
@@ -70,10 +70,10 @@ export default function Home() {
           </h2>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {/* Score card */}
-            <article className="border-hairline/20 bg-card p-6 shadow-upl-sm">
+            <article className="border-hairline bg-card p-6 shadow-upl-sm">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-semibold">Upsell score</h3>
-                <span className="bg-success text-on-primary flex h-10 w-10 items-center justify-center text-lg font-semibold">
+                <span className="bg-success text-[#023330] flex h-10 w-10 items-center justify-center text-lg font-semibold">
                   B
                 </span>
               </div>
@@ -81,7 +81,7 @@ export default function Home() {
                 A–F grade across six areas — packages, sellability, reach,
                 presentation, personalization, mobile — each with a one-line fix.
               </p>
-              <dl className="mt-5 space-y-2 border-t border-hairline/15 pt-4 text-sm">
+              <dl className="mt-5 space-y-2 border-t border-hairline pt-4 text-sm">
                 {["Packages exist", "Sellable online", "Pre-arrival reach"].map((label, i) => (
                   <div key={label} className="flex items-center justify-between">
                     <dt className="text-muted-foreground">{label}</dt>
@@ -92,9 +92,9 @@ export default function Home() {
             </article>
 
             {/* Guest page card */}
-            <article className="border-hairline/20 bg-card p-6 shadow-upl-sm">
+            <article className="border-hairline bg-card p-6 shadow-upl-sm">
               <h3 className="text-base font-semibold">Guest pages, three ways</h3>
-              <div className="bg-background mt-4 border border-hairline/20 p-4 shadow-upl-md">
+              <div className="bg-background mt-4 border border-hairline p-4 shadow-upl-md">
                 <div className="text-muted-foreground text-[10px] uppercase tracking-[0.18em]">Family of 4 · Expedia</div>
                 <div className="mt-2 space-y-1.5 text-sm">
                   <div className="text-ink font-normal">Breakfast for 4</div>
@@ -113,7 +113,7 @@ export default function Home() {
             </article>
 
             {/* Numbers card */}
-            <article className="border-hairline/20 bg-card p-6 shadow-upl-sm">
+            <article className="border-hairline bg-card p-6 shadow-upl-sm">
               <h3 className="text-base font-semibold">Your numbers, live</h3>
               <div className="mt-4">
                 <div className="font-notch text-ink text-4xl font-semibold tracking-display">$38–71k</div>
@@ -143,7 +143,7 @@ export default function Home() {
               </a>
               <a
                 href="#how"
-                className="text-canvas hover:border-hairline inline-flex h-[70px] items-center border border-white/10 bg-white/5 px-8 text-base font-normal transition-colors"
+                className="text-canvas hover:border-primary inline-flex h-[70px] items-center border border-white/10 bg-white/5 px-8 text-base font-normal transition-colors"
               >
                 How it works
               </a>

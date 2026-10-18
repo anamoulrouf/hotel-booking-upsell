@@ -27,7 +27,7 @@ export function RemoveForm() {
           required
           placeholder="https://…/report/<token> or just the token"
           aria-label="Report link or token"
-          className="border-input text-ink placeholder:text-muted-foreground h-14 flex-1 border bg-white px-4 text-base font-normal transition-colors focus:border-hairline focus:shadow-upl-md focus:outline-none"
+          className="border-input text-ink placeholder:text-muted-foreground h-14 flex-1 border bg-white px-4 text-base font-normal transition-colors focus:border-primary focus:shadow-upl-md focus:outline-none"
         />
         <button
           type="submit"

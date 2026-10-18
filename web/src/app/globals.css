@@ -14,33 +14,39 @@
   --font-stack-notch: var(--ff-notch), "Stack Sans Notch", ui-sans-serif, system-ui, sans-serif;
   --font-stack-headline: var(--ff-headline), "Stack Sans Headline", ui-sans-serif, system-ui, sans-serif;
   --font-stack-text: var(--ff-text), "Stack Sans Text", ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+  --font-stack-bricolage: var(--ff-bricolage), "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
 
-  /* Brand palette (measured) */
-  --upl-primary: #ff9e00;
-  --upl-on-primary: #222222;
+  /* Brand palette — measured from upsell-experience.uplayer.agency (docs/10-DESIGN.md v2).
+     Primary is the brand blue; amber is the secondary accent (highlights/decorative only). */
+  --upl-primary: #0f65f4;
+  --upl-on-primary: #ffffff;
+  --upl-accent: #ff9e00; /* secondary emphasis — money figures, heading periods, FIX chips */
+  --upl-on-accent: #222222; /* label color over amber */
   --upl-canvas: #ffffff;
-  --upl-surface: #f0f4ff;
+  --upl-surface: #eff6ff; /* light card tint (button-filled surface, doc §4) */
+  --upl-surface-dark: #0a1430; /* measured `surface` — dark containers/panels */
   --upl-surface-alt: #020617;
-  --upl-ink: #0f172a;
-  --upl-body: #334155;
-  --upl-muted: #64748b;
-  --upl-hairline: #0f65f4;
+  --upl-ink: #334155;
+  --upl-body: #64748b;
+  --upl-muted: #64748b; /* light-context muted; measured muted #CFE0FF is dark-surface only */
+  --upl-muted-dark: #cfe0ff; /* captions on dark navy surfaces */
+  --upl-hairline: #dbe7fb; /* 1px borders/dividers */
   --upl-success: #00b894;
   --upl-neutral: #d1d3d7;
-  --upl-accent-1: #0b3da8;
-  --upl-accent-2: #14b8a6;
-  --upl-accent-3: #5a9aff;
+  --upl-accent-1: #475569;
+  --upl-accent-2: #0b1b3a;
+  --upl-accent-3: #1e293b;
+  --upl-accent-4: #a8b6cc;
+  --upl-accent-5: #8fa6ce;
+  --upl-accent-6: #5a9aff;
   --upl-accent-deep: #c27800; /* light-theme accent — used for grade C */
 
-  /* Layered micro-shadows (oklab, per spec) */
-  --shadow-upl-sm:
-    0 0 0 1px oklab(0.999994 0.0000455678 0.0000200868 / 0.2),
-    0 10px 15px -3px oklab(0.553484 -0.0356502 -0.22454 / 0.4),
-    0 4px 6px -4px oklab(0.553484 -0.0356502 -0.22454 / 0.4);
-  --shadow-upl-md:
-    0 10px 15px -3px oklab(0.553484 -0.0356502 -0.22454 / 0.25),
-    0 4px 6px -4px oklab(0.553484 -0.0356502 -0.22454 / 0.25);
-  --shadow-upl-lg: 0 8px 24px 0 rgba(15, 23, 42, 0.06);
+  /* Elevation — measured single-layer scale (doc §6). In-flow cards use sm
+     (doc "md": secondary floating cards); floating overlays use xl (doc "sm"). */
+  --shadow-upl-sm: rgba(15, 23, 42, 0.28) 0px 24px 48px -16px;
+  --shadow-upl-md: rgba(15, 23, 42, 0.35) 0px 20px 40px -16px;
+  --shadow-upl-lg: rgba(15, 23, 42, 0.35) 0px 16px 32px -14px;
+  --shadow-upl-xl: rgba(15, 23, 42, 0.45) 0px 24px 48px -12px;
 
   /* shadcn token mapping → UpLayer palette */
   --radius: 0rem;
@@ -62,11 +68,11 @@
   --destructive-foreground: #ffffff;
   --border: var(--upl-neutral);
   --input: var(--upl-neutral);
-  --ring: var(--upl-hairline);
+  --ring: var(--upl-primary); /* focusRing #0F65F4 (doc themes.light) */
   --chart-1: var(--upl-primary);
-  --chart-2: var(--upl-hairline);
+  --chart-2: var(--upl-accent-6);
   --chart-3: var(--upl-success);
-  --chart-4: var(--upl-accent-3);
+  --chart-4: var(--upl-accent-5);
   --chart-5: var(--upl-accent-2);
 }
 
@@ -93,9 +99,12 @@
   --color-ink: var(--upl-ink);
   --color-body: var(--upl-body);
   --color-surface-alt: var(--upl-surface-alt);
+  --color-surface-dark: var(--upl-surface-dark);
   --color-hairline: var(--upl-hairline);
   --color-success: var(--upl-success);
-  --color-brand: var(--upl-primary);
+  /* `brand` = the amber secondary accent; primary CTAs use primary/on-primary */
+  --color-brand: var(--upl-accent);
+  --color-on-brand: var(--upl-on-accent);
   --color-on-primary: var(--upl-on-primary);
   --radius-sm: 0px;
   --radius-md: 0px;
@@ -104,9 +113,11 @@
   --font-notch: var(--font-stack-notch);
   --font-head: var(--font-stack-headline);
   --font-text: var(--font-stack-text);
+  --font-bricolage: var(--font-stack-bricolage);
   --shadow-upl-sm: var(--shadow-upl-sm);
   --shadow-upl-md: var(--shadow-upl-md);
   --shadow-upl-lg: var(--shadow-upl-lg);
+  --shadow-upl-xl: var(--shadow-upl-xl);
 }
 
 @layer base {

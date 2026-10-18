@@ -1,39 +1,40 @@
 ---
-version: alpha
-name: Uplayer
+version: 2.0-alpha
+name: Upsell-experience
 description: |
-  UpLayer's design system embodies a modern, sophisticated aesthetic rooted in
-  technology and innovation. The visual language is defined by sharp, orthogonal
-  forms—zero border radius on interactive elements creates a technical,
-  forward-thinking feel. The palette combines vibrant primary accents with deep,
-  neutral surfaces, reinforced by carefully layered micro-shadows that provide
-  subtle depth without visual clutter. Decorative gradients and radial patterns
-  underscore sections with soft, blurred blue tonalities, suggesting AI and
-  intelligence. The typography system uses contemporary geometric sans-serifs
-  (Stack Sans family variants) with generous scale jumps, emphasizing hierarchy
-  through size and weight rather than color contrast. Overall, the system feels
-  ambitious and premium, designed to convey trustworthiness and cutting-edge
-  capability.
+  UpLayer's design system projects modern efficiency and hospitality-focused
+  clarity through a crisp, minimalist aesthetic. The interface balances warm,
+  inviting moments—evident in the coral accent tones and rounded typography—with
+  clean, professional structure that speaks to enterprise software reliability.
+  The primary blue (#0F65F4) serves as the dominant brand voice, anchoring trust
+  and action throughout. Subtle depth emerges from carefully layered
+  micro-shadows and refined color blocking rather than dramatic elevation
+  changes. The system favors generous whitespace, sharp geometric forms (zero
+  border radius throughout), and a restrained, purposeful palette that
+  prioritizes clarity for booking and hospitality workflows.
 source:
-  url: "https://uplayer.agency"
+  url: "https://upsell-experience.uplayer.agency"
   pagesAnalyzed: 1
-  extractedAt: 2026-10-07
+  extractedAt: 2026-10-18
   tokensMeasured: true
 colors:
-  primary: "#FF9E00"
-  accent: "#334155"
+  primary: "#0F65F4"
+  accent: "#FF9E00"
   canvas: "#FFFFFF"
-  surface: "#F0F4FF"
+  surface: "#0A1430"
   surface-alt: "#020617"
-  on-primary: "#222222"
-  ink: "#0F172A"
-  body: "#334155"
-  muted: "#64748B"
-  hairline: "#0F65F4"
+  on-primary: "#FFFFFF"
+  ink: "#334155"
+  body: "#64748B"
+  muted: "#CFE0FF"
+  hairline: "#DBE7FB"
   success: "#00B894"
-  accent-1: "#0B3DA8"
-  accent-2: "#14B8A6"
-  accent-3: "#5A9AFF"
+  accent-1: "#475569"
+  accent-2: "#0B1B3A"
+  accent-3: "#1E293B"
+  accent-4: "#A8B6CC"
+  accent-5: "#8FA6CE"
+  accent-6: "#5A9AFF"
   neutral-1: "#D1D3D7"
 typography:
   display-xxl:
@@ -44,58 +45,39 @@ typography:
     letterSpacing: -7.56px
   display-xl:
     fontFamily: "Stack Sans Notch"
-    fontSize: 96px
-    fontWeight: 600
-    lineHeight: 0.95
-    letterSpacing: -2.4px
-  display-lg:
-    fontFamily: "Stack Sans Notch"
-    fontSize: 84.816px
-    fontWeight: 600
-    lineHeight: 1.06
+    fontSize: 72px
+    fontWeight: 500
+    lineHeight: 0.92
     letterSpacing: 0px
-  display-md:
+  display-xl-strong:
     fontFamily: "Stack Sans Notch"
     fontSize: 72px
-    fontWeight: 600
-    lineHeight: 1
+    fontWeight: 700
+    lineHeight: 1.08
     letterSpacing: 0px
-  display-sm:
+  display-lg:
     fontFamily: "Stack Sans Notch"
     fontSize: 48px
     fontWeight: 600
     lineHeight: 1.25
     letterSpacing: 0px
-  display-sm-capitalize:
+  display-lg-tight:
     fontFamily: "Stack Sans Notch"
     fontSize: 48px
     fontWeight: 600
-    lineHeight: 1.25
-    letterSpacing: 0px
-    textTransform: capitalize
-  heading-xl:
-    fontFamily: "Stack Sans Headline"
-    fontSize: 36px
-    fontWeight: 600
-    lineHeight: 1.25
-    letterSpacing: 0px
-  heading-lg:
-    fontFamily: "Stack Sans Notch"
-    fontSize: 30px
-    fontWeight: 500
     lineHeight: 1.2
     letterSpacing: 0px
-  heading-lg-strong:
-    fontFamily: "Stack Sans Headline"
-    fontSize: 30px
+  display-lg-2:
+    fontFamily: "Stack Sans Notch"
+    fontSize: 48px
     fontWeight: 600
-    lineHeight: 1.25
+    lineHeight: 1.15
     letterSpacing: 0px
   heading-md:
-    fontFamily: "Stack Sans Headline"
-    fontSize: 24px
+    fontFamily: "Bricolage Grotesque"
+    fontSize: 30px
     fontWeight: 600
-    lineHeight: 1.25
+    lineHeight: 1.35
     letterSpacing: 0px
   heading-sm:
     fontFamily: "Stack Sans Headline"
@@ -105,21 +87,27 @@ typography:
     letterSpacing: 0px
   heading-xs:
     fontFamily: "Stack Sans Headline"
-    fontSize: 16px
+    fontSize: 18px
     fontWeight: 600
     lineHeight: 1.25
+    letterSpacing: 0px
+  quote:
+    fontFamily: "Bricolage Grotesque"
+    fontSize: 30px
+    fontWeight: 400
+    lineHeight: 1.35
     letterSpacing: 0px
   body-lg:
     fontFamily: "Stack Sans Text"
     fontSize: 18px
     fontWeight: 300
-    lineHeight: 1.56
+    lineHeight: 1.6
     letterSpacing: 0px
-  body-lg-loose:
-    fontFamily: "Stack Sans Text"
+  body-lg-strong:
+    fontFamily: "Stack Sans Headline"
     fontSize: 18px
-    fontWeight: 300
-    lineHeight: 1.63
+    fontWeight: 600
+    lineHeight: 1.56
     letterSpacing: 0px
   body-md:
     fontFamily: "Stack Sans Text"
@@ -128,45 +116,56 @@ typography:
     lineHeight: 1.5
     letterSpacing: 0px
   body-md-strong:
+    fontFamily: "Stack Sans Headline"
+    fontSize: 16px
+    fontWeight: 600
+    lineHeight: 1.5
+    letterSpacing: 0px
+  body-md-tight:
+    fontFamily: "Stack Sans Text"
+    fontSize: 16px
+    fontWeight: 600
+    lineHeight: 1.38
+    letterSpacing: 0px
+  body-sm:
+    fontFamily: "Stack Sans Text"
+    fontSize: 15px
+    fontWeight: 500
+    lineHeight: 1.5
+    letterSpacing: 0px
+  button-md:
     fontFamily: "Stack Sans Text"
     fontSize: 16px
     fontWeight: 400
     lineHeight: 1.5
     letterSpacing: 0px
-  body-sm:
+  button-md-strong:
     fontFamily: "Stack Sans Text"
-    fontSize: 14px
-    fontWeight: 300
-    lineHeight: 1.43
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 1.5
     letterSpacing: 0px
-  body-sm-strong:
-    fontFamily: "Stack Sans Text"
-    fontSize: 14px
-    fontWeight: 400
-    lineHeight: 1.38
-    letterSpacing: 0px
-    textTransform: capitalize
-  nav:
-    fontFamily: "Stack Sans Text"
-    fontSize: 24px
-    fontWeight: 400
-    lineHeight: 1.33
-    letterSpacing: 0px
-  button:
-    fontFamily: "Stack Sans Text"
-    fontSize: 14px
-    fontWeight: 400
-    lineHeight: 1.43
-    letterSpacing: 0px
-  label:
+  label-sm:
     fontFamily: "Stack Sans Text"
     fontSize: 14px
     fontWeight: 500
     lineHeight: 1.43
     letterSpacing: 0px
+  label-sm-strong:
+    fontFamily: "Stack Sans Text"
+    fontSize: 14px
+    fontWeight: 600
+    lineHeight: 1.5
+    letterSpacing: 0px
+  caption:
+    fontFamily: "Stack Sans Text"
+    fontSize: 12px
+    fontWeight: 300
+    lineHeight: 1.33
+    letterSpacing: 1.2px
+    textTransform: uppercase
 rounded:
   none: 0px
-  full: 9999px
 spacing:
   xxs: 4px
   xs: 8px
@@ -175,40 +174,44 @@ spacing:
   lg: 20px
   xl: 24px
   xxl: 32px
-  xxxl: 40px
-  section: 48px
-  band: 64px
+  xxxl: 36px
+  section: 40px
+  band: 48px
 borderWidths:
   thin: 1px
+  medium: 2px
 shadows:
-  sm: "oklab(0.999994 0.0000455678 0.0000200868 / 0.2) 0px 0px 0px 1px, oklab(0.553484 -0.0356502 -0.22454 / 0.4) 0px 10px 15px -3px, oklab(0.553484 -0.0356502 -0.22454 / 0.4) 0px 4px 6px -4px"
-  md: "oklab(0.553484 -0.0356502 -0.22454 / 0.25) 0px 10px 15px -3px, oklab(0.553484 -0.0356502 -0.22454 / 0.25) 0px 4px 6px -4px"
-  lg: "rgba(15, 23, 42, 0.06) 0px 8px 24px 0px"
+  sm: "rgba(15, 23, 42, 0.45) 0px 24px 48px -12px"
+  md: "rgba(15, 23, 42, 0.28) 0px 24px 48px -16px"
+  lg: "rgba(15, 23, 42, 0.35) 0px 20px 40px -16px"
+  xl: "rgba(15, 23, 42, 0.35) 0px 16px 32px -14px"
 elevationStrategy: layered-micro
 themes:
   derived: dark   # the other theme is the site's measured palette
   light:
     bg: "#FFFFFF"
-    surface: "#F0F4FF"
-    surfaceRaised: "#E7EBF6"
-    text: "#0F172A"
-    textMuted: "#334155"
-    border: "#0F65F4"
-    accent: "#C27800"
-    accentFg: "#000000"
-    focusRing: "#FF9E00"
+    surface: "#0A1430"
+    surfaceRaised: "#0C1631"
+    text: "#334155"
+    textMuted: "#64748B"
+    border: "#DBE7FB"
+    accent: "#0F65F4"
+    accentFg: "#FFFFFF"
+    focusRing: "#0F65F4"
     elevation: shadow
   dark:
-    bg: "#161109"
-    surface: "#241F18"
-    surfaceRaised: "#302B24"
-    text: "#FFFBF5"
-    textMuted: "#A6A29B"
-    border: "#3B3730"
-    accent: "#FF9E00"
+    bg: "#090D16"
+    surface: "#181C24"
+    surfaceRaised: "#242830"
+    text: "#F5F9FF"
+    textMuted: "#9B9FA6"
+    border: "#30343B"
+    accent: "#367EF6"
     accentFg: "#0B0B0C"
-    focusRing: "#FF9E00"
+    focusRing: "#0F65F4"
     elevation: "border+surface"
+  contrastFailures:
+    - "light: text on surface = 1.75:1 (needs 4.5:1)"
 gradients:
   - context: hero
     kind: radial
@@ -217,113 +220,153 @@ gradients:
     kind: radial
     value: "radial-gradient(rgba(15, 101, 244, 0.18), rgba(0, 0, 0, 0) 70%)"
     filter: "blur(40px)"
-  - context: section
-    kind: linear
-    value: "linear-gradient(to right in oklab, rgb(1, 132, 248) 0%, rgb(27, 73, 241) 100%)"
-  - context: section
+  - context: hero
     kind: radial
-    value: "radial-gradient(rgba(15, 101, 244, 0.16), rgba(90, 154, 255, 0.07) 45%, rgba(0, 0, 0, 0) 72%)"
+    value: "radial-gradient(rgba(15, 101, 244, 0.14), rgba(90, 154, 255, 0.06) 45%, rgba(0, 0, 0, 0) 72%)"
+    filter: "blur(64px)"
+  - context: hero
+    kind: radial
+    value: "radial-gradient(rgba(15, 101, 244, 0.22), rgba(90, 154, 255, 0.08) 50%, rgba(0, 0, 0, 0) 75%)"
     filter: "blur(64px)"
   - context: section
     kind: linear
     value: "linear-gradient(90deg, rgb(71, 175, 255) 0%, rgb(27, 73, 241) 100%)"
   - context: section
-    kind: radial
-    value: "radial-gradient(60% 100% at 50% 0px, rgba(255, 255, 255, 0.14), rgba(0, 0, 0, 0) 72%)"
+    kind: linear
+    value: "linear-gradient(to right in oklab, rgb(1, 132, 248) 0%, rgb(27, 73, 241) 100%)"
 components:
-  button-outline:
-    typography: "{typography.body-md-strong}"
-    textColor: "{colors.canvas}"
-    border: "1px solid oklab(0.999994 0.0000455678 0.0000200868 / 0.1)"
-    height: 70px
-    padding: "12px 32px 12px 12px"
-    backgroundColor: "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)"
-  button-outline-sm:
-    typography: "{typography.body-md-strong}"
-    textColor: "oklab(0.999994 0.0000455677 0.0000200868 / 0.8)"
-    border: "1px solid oklab(0.999994 0.0000455678 0.0000200868 / 0.1)"
-    height: 42px
-    padding: "8px 12px 8px 12px"
-    backgroundColor: "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)"
-  button-icon:
-    typography: "{typography.body-md-strong}"
-    textColor: "{colors.ink}"
+  button-filled:
+    textColor: "{colors.accent-3}"
+    border: "1px solid rgb(59, 130, 246)"
+    height: 56px
+    padding: "0px 20px 0px 20px"
+    fontSize: 18px
+    fontFamily: "Stack Sans Text"
+    fontWeight: 500
+    lineHeight: 1.56
+    backgroundColor: "rgb(239, 246, 255)"
+  button-filled-2:
+    textColor: "{colors.accent-3}"
+    height: 56px
+    padding: "0px 20px 0px 20px"
+    fontSize: 18px
+    fontFamily: "Stack Sans Text"
+    fontWeight: 400
+    lineHeight: 1.56
+    backgroundColor: "rgb(245, 245, 245)"
+  button-text:
+    typography: "{typography.label-sm}"
+    textColor: "{colors.on-primary}"
+    height: 32px
+    backgroundColor: "oklab(0.999994 0.0000455678 0.0000200868 / 0.1)"
+  button-primary:
+    textColor: "{colors.on-primary}"
     height: 40px
-    backgroundColor: "oklab(0.999994 0.0000455678 0.0000200868 / 0.9)"
+    padding: "0px 16px 0px 16px"
+    fontSize: 14px
+    fontFamily: "Stack Sans Text"
+    fontWeight: 600
+    lineHeight: 1.43
+    backgroundColor: "{colors.primary}"
+  button-outline:
+    typography: "{typography.button-md-strong}"
+    textColor: "{colors.primary}"
+    border: "2px solid {colors.primary}"
+    height: 56px
+    padding: "0px 28px 0px 28px"
+  button-outline-sm:
+    typography: "{typography.button-md-strong}"
+    textColor: "{colors.on-primary}"
+    border: "2px solid {colors.canvas}"
+    height: 48px
+    padding: "0px 20px 0px 20px"
+  input:
+    textColor: "{colors.accent-2}"
+    height: 34px
+    padding: "0px 6px 0px 6px"
+    fontSize: 14px
+    fontFamily: "Stack Sans Text"
+    fontWeight: 600
+    lineHeight: 1.43
+  card:
+    typography: "{typography.button-md}"
+    textColor: "{colors.ink}"
   navigation:
-    typography: "{typography.body-md-strong}"
-    textColor: "{colors.body}"
+    typography: "{typography.button-md}"
+    textColor: "{colors.ink}"
     height: 72px
   footer:
-    typography: "{typography.body-md-strong}"
-    textColor: "{colors.canvas}"
+    typography: "{typography.button-md}"
+    textColor: "{colors.on-primary}"
     backgroundColor: "{colors.surface-alt}"
   link:
-    typography: "{typography.body-md-strong}"
-    textColor: "{colors.body}"
-    backgroundColor: "{colors.surface-alt}"
-  link-sm:
-    typography: "{typography.body-md-strong}"
-    textColor: "{colors.body}"
-    padding: "16px 0px 16px 0px"
+    typography: "{typography.button-md}"
+    textColor: "oklab(0.999994 0.0000455677 0.0000200868 / 0.7)"
+    border: "1px solid oklab(0.999994 0.0000455678 0.0000200868 / 0.15)"
+    backgroundColor: "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)"
+  link-lg:
+    typography: "{typography.button-md-strong}"
+    textColor: "{colors.on-primary}"
+    border: "1px solid rgb(38, 55, 95)"
+    padding: "0px 16px 0px 16px"
 states:
   other-hover:
     target: other
     state: hover
-    borderColor: "{colors.hairline}"
+    backgroundColor: "rgb(148, 163, 184)"
   other-focus:
     target: other
     state: focus
-    borderColor: "{colors.hairline}"
-  other-focus-visible:
+    borderColor: "{colors.primary}"
+  other-disabled:
     target: other
-    state: focus-visible
-    borderColor: "lab(45.5239 21.4305 -79.4599 / 0.15)"
+    state: disabled
+    opacity: 0.4
 breakpoints:
   - width: 375
-    containerWidth: 343
-    gridColumns: 4
-    navLinksVisible: 10
+    containerWidth: 375
+    gridColumns: 7
+    navLinksVisible: 1
     menuToggleVisible: true
-    headingPx: 36
+    headingPx: 42
     bodyPx: 16
     sectionPaddingX: 0
   - width: 768
-    containerWidth: 720
-    gridColumns: 4
-    navLinksVisible: 10
+    containerWidth: 768
+    gridColumns: 7
+    navLinksVisible: 1
     menuToggleVisible: true
-    headingPx: 48
+    headingPx: 60
     bodyPx: 16
     sectionPaddingX: 0
   - width: 1024
-    containerWidth: 976
-    gridColumns: 6
-    navLinksVisible: 17
-    menuToggleVisible: true
-    headingPx: 48
+    containerWidth: 1024
+    gridColumns: 7
+    navLinksVisible: 8
+    menuToggleVisible: false
+    headingPx: 72
     bodyPx: 16
     sectionPaddingX: 0
   - width: 1280
     containerWidth: 1280
-    gridColumns: 6
-    navLinksVisible: 17
+    gridColumns: 7
+    navLinksVisible: 8
     menuToggleVisible: false
-    headingPx: 48
+    headingPx: 72
     bodyPx: 16
     sectionPaddingX: 0
   - width: 1440
     containerWidth: 1280
-    gridColumns: 6
-    navLinksVisible: 17
+    gridColumns: 7
+    navLinksVisible: 8
     menuToggleVisible: false
-    headingPx: 48
+    headingPx: 72
     bodyPx: 16
     sectionPaddingX: 0
 coverage:
-  statesFound: 61
+  statesFound: 37
   gradientsFound: 8
-  rolesUnassigned: 4
+  rolesUnassigned: 7
   archetypesUnnamed: 0
   archetypesDetected: 0
   responsiveMeasured: true
@@ -333,426 +376,387 @@ coverage:
 
 # Design System Inspired by UpLayer
 
+> **v2.0** — re-measured from `upsell-experience.uplayer.agency` (2026-10-18),
+> replacing the v1 extraction of `uplayer.agency` (2026-10-07). Headline change:
+> the primary brand color moves from amber `#FF9E00` to blue `#0F65F4`; amber is
+> demoted to the secondary accent (highlights and decorative emphasis only).
+
 ## 1. Visual Theme & Atmosphere
 
-UpLayer's design system embodies a modern, sophisticated aesthetic rooted in technology and innovation. The visual language is defined by sharp, orthogonal forms—zero border radius on interactive elements creates a technical, forward-thinking feel. The palette combines vibrant primary accents with deep, neutral surfaces, reinforced by carefully layered micro-shadows that provide subtle depth without visual clutter. Decorative gradients and radial patterns underscore sections with soft, blurred blue tonalities, suggesting AI and intelligence. The typography system uses contemporary geometric sans-serifs (Stack Sans family variants) with generous scale jumps, emphasizing hierarchy through size and weight rather than color contrast. Overall, the system feels ambitious and premium, designed to convey trustworthiness and cutting-edge capability.
+UpLayer's design system projects modern efficiency and hospitality-focused clarity through a crisp, minimalist aesthetic. The interface balances warm, inviting moments—evident in the coral accent tones and rounded typography—with clean, professional structure that speaks to enterprise software reliability. The primary blue (`{colors.primary}` — `#0F65F4`) serves as the dominant brand voice, anchoring trust and action throughout. Subtle depth emerges from carefully layered micro-shadows and refined color blocking rather than dramatic elevation changes. The system favors generous whitespace, sharp geometric forms (zero border radius throughout), and a restrained, purposeful palette that prioritizes clarity for booking and hospitality workflows.
 
 **Key Characteristics**
-- Sharp, orthogonal component corners (0px border radius on buttons, inputs, images)
-- Layered micro-shadow elevation strategy for subtle, barely-there depth
-- Bold, oversized display typography with aggressive negative letter-spacing on hero scales
-- Vibrant primary accent (`{colors.primary}` — `#FF9E00`) paired with deep, dark surfaces
-- Decorative gradient backgrounds using blue and purple hues on alternating sections
+- Sharp, geometric form language — no border radius on core interactive components
+- Micro-layered shadow elevation strategy for subtle depth without visual noise
+- Restrained, semantic color palette with strategic brand blue activation
 - Generous whitespace and breathing room between sections
-- Minimal color blocking; depth achieved through surface color shifts and shadow layering
+- Clean, sans-serif typography hierarchy supporting rapid scanning
+- Hospitality-centric messaging paired with enterprise-grade structure
 
 ## 2. Color Palette & Roles
 
 ### Primary
-- **Brand Accent** (`{colors.primary}` — `#FF9E00`): Primary call-to-action fills, brand mark highlight, active state indicators, and focal accents throughout the interface.
-
-### Accent Colors
-- **Decorative Accent A** (`{colors.accent-1}` — `#0B3DA8`): Decorative element; no assigned functional role.
-- **Decorative Accent B** (`{colors.accent-2}` — `#14B8A6`): Decorative element; no assigned functional role.
-- **Decorative Accent C** (`{colors.accent-3}` — `#5A9AFF`): Decorative element; no assigned functional role.
-- **Secondary Accent** (`{colors.accent}` — `#334155`): Secondary accent used in hero bands, body copy emphasis, and decorative text overlays.
+- **Primary / Brand** (`{colors.primary}` — `#0F65F4`): Primary CTA buttons, active states, brand mark, link highlights, and key interactive affordances
+- **Accent** (`{colors.accent}` — `#FF9E00`): Secondary accent for hero bands, highlights, and decorative emphasis
 
 ### Interactive
-- **Link Interaction** (`{colors.hairline}` — `#0F65F4`): Primary link color, form focus states, and interactive border indicators.
+- **Success** (`{colors.success}` — `#00B894`): Confirmation, approval, and positive completion states
 
 ### Neutral Scale
-- **Canvas** (`{colors.canvas}` — `#FFFFFF`): Default page background and light card surfaces.
-- **Surface** (`{colors.surface}` — `#F0F4FF`): Secondary card and panel backgrounds; light blue tint for subtle differentiation.
-- **Surface Alt** (`{colors.surface-alt}` — `#020617`): Dark alternating section bands and footer backgrounds.
-- **Ink** (`{colors.ink}` — `#0F172A`): Primary heading and body text color; highest contrast against light surfaces.
-- **Muted** (`{colors.muted}` — `#64748B`): Secondary text, captions, metadata, and reduced-emphasis copy.
-- **On Primary** (`{colors.on-primary}` — `#222222`): Label and text color applied over brand-colored surfaces.
-- **Neutral Divider** (`{colors.neutral-1}` — `#D1D3D7`): Subtle border and divider strokes.
+- **Canvas** (`{colors.canvas}` — `#FFFFFF`): Default page background and label color on brand surfaces
+- **Ink** (`{colors.ink}` — `#334155`): Primary heading and text color, high contrast
+- **Body** (`{colors.body}` — `#64748B`): Body copy and secondary text
+- **Muted** (`{colors.muted}` — `#CFE0FF`): Captions, secondary text, and reduced-emphasis labels
 
-### Semantic / Status
-- **Success** (`{colors.success}` — `#00B894`): Success states, confirmation indicators, and positive feedback.
+### Surface & Borders
+- **Surface** (`{colors.surface}` — `#0A1430`): Card and panel backgrounds, dark theme containers
+- **Surface Alt** (`{colors.surface-alt}` — `#020617`): Alternating section bands and footer
+- **Hairline** (`{colors.hairline}` — `#DBE7FB`): 1px borders, dividers, and subtle separation
+- **Neutral Secondary** (`{colors.neutral-1}` — `#D1D3D7`): Additional neutral surface role
+
+### Decorative
+- **Accent Slate** (`{colors.accent-1}` — `#475569`): Decorative use only
+- **Accent Navy Dark** (`{colors.accent-2}` — `#0B1B3A`): Decorative use only
+- **Accent Slate Dark** (`{colors.accent-3}` — `#1E293B`): Decorative use only
+- **Accent Periwinkle Light** (`{colors.accent-4}` — `#A8B6CC`): Decorative use only
+- **Accent Periwinkle** (`{colors.accent-5}` — `#8FA6CE`): Decorative use only
+- **Accent Blue** (`{colors.accent-6}` — `#5A9AFF`): Decorative use only
 
 ## 3. Typography Rules
 
 ### Font Family
-- **Primary Display & Headlines**: Stack Sans Headline, Stack Sans Notch (https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Stack+Sans+Headline:wght@200..700&family=Stack+Sans+Notch:wght@200..700&family=Stack+Sans+Text:wght@200..700&display=swap)
-- **Body & UI Text**: Stack Sans Text (https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Stack+Sans+Headline:wght@200..700&family=Stack+Sans+Notch:wght@200..700&family=Stack+Sans+Text:wght@200..700&display=swap)
-- **Fallback**: `-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif`
+
+**Primary (Display & Headlines):** Stack Sans Notch, Stack Sans Headline, sans-serif
+**Secondary (Body & UI):** Stack Sans Text, sans-serif
+**Display Alt:** Bricolage Grotesque, sans-serif
 
 ### Hierarchy
 
 | Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|---|---|---|---|---|---|---|
-| **Display XXL** | Stack Sans Notch | 302px | 600 | 1.00 | −7.56px | Ultra-large hero display; aggressive negative tracking |
-| **Display XL** | Stack Sans Notch | 96px | 600 | 0.95 | −2.4px | Large hero headlines with tight tracking |
-| **Display LG** | Stack Sans Notch | 84px | 600 | 1.06 | 0px | Large display headlines |
-| **Display MD** | Stack Sans Notch | 72px | 600 | 1.00 | 0px | Medium display headlines |
-| **Display SM** | Stack Sans Notch | 48px | 600 | 1.25 | 0px | Small display headlines |
-| **Heading XL** | Stack Sans Headline | 36px | 600 | 1.25 | 0px | Primary section heading |
-| **Heading LG Strong** | Stack Sans Headline | 30px | 600 | 1.25 | 0px | Strong subsection heading |
-| **Heading LG** | Stack Sans Notch | 30px | 500 | 1.20 | 0px | Medium subsection heading |
-| **Heading MD** | Stack Sans Headline | 24px | 600 | 1.25 | 0px | Card or panel title |
-| **Heading SM** | Stack Sans Headline | 20px | 600 | 1.25 | 0px | Small card heading |
-| **Heading XS** | Stack Sans Headline | 16px | 600 | 1.25 | 0px | Minimal heading or label emphasis |
-| **Body LG Loose** | Stack Sans Text | 18px | 300 | 1.63 | 0px | Large body copy with generous spacing |
-| **Body LG** | Stack Sans Text | 18px | 300 | 1.56 | 0px | Large body copy |
-| **Body MD Strong** | Stack Sans Text | 16px | 400 | 1.50 | 0px | Medium body copy, emphasized |
-| **Body MD** | Stack Sans Text | 16px | 300 | 1.50 | 0px | Standard body copy |
-| **Button** | Stack Sans Text | 14px | 400 | 1.43 | 0px | Button and CTA text |
-| **Label** | Stack Sans Text | 14px | 500 | 1.43 | 0px | Form label and small emphasis |
-| **Body SM Strong** | Stack Sans Text | 14px | 400 | 1.38 | 0px | Small copy, emphasized (uppercase capable) |
-| **Body SM** | Stack Sans Text | 14px | 300 | 1.43 | 0px | Small body copy and captions |
-| **Navigation** | Stack Sans Text | 24px | 400 | 1.33 | 0px | Primary navigation links |
+|------|------|------|--------|-------------|----------------|-------|
+| Display XXL | Stack Sans Notch | 302px | 600 | 1.0 | -7.56px | Hero scale, extreme letter-spacing compression |
+| Display XL Strong | Stack Sans Notch | 72px | 700 | 1.08 | 0px | Largest standard heading |
+| Display XL | Stack Sans Notch | 72px | 500 | 0.92 | 0px | Hero headings |
+| Display LG | Stack Sans Notch | 48px | 600 | 1.25 | 0px | Major section headings |
+| Display LG Tight | Stack Sans Notch | 48px | 600 | 1.2 | 0px | Compressed variant |
+| Display LG 2 | Stack Sans Notch | 48px | 600 | 1.15 | 0px | Alternate tight variant |
+| Heading MD | Bricolage Grotesque | 30px | 600 | 1.35 | 0px | Secondary heading size |
+| Heading SM | Stack Sans Headline | 20px | 600 | 1.25 | 0px | Card titles, subsections |
+| Heading XS | Stack Sans Headline | 18px | 600 | 1.25 | 0px | Small section headers |
+| Body LG | Stack Sans Text | 18px | 300 | 1.6 | 0px | Large body text |
+| Body LG Strong | Stack Sans Headline | 18px | 600 | 1.56 | 0px | Emphasized large body |
+| Body MD | Stack Sans Text | 16px | 300 | 1.5 | 0px | Primary body copy |
+| Body MD Strong | Stack Sans Headline | 16px | 600 | 1.5 | 0px | Bold body text |
+| Body MD Tight | Stack Sans Text | 16px | 600 | 1.38 | 0px | Condensed body variant |
+| Body SM | Stack Sans Text | 15px | 500 | 1.5 | 0px | Secondary body text |
+| Button MD | Stack Sans Text | 16px | 400 | 1.5 | 0px | Standard button label |
+| Button MD Strong | Stack Sans Text | 16px | 500 | 1.5 | 0px | Emphasized button label |
+| Label SM | Stack Sans Text | 14px | 500 | 1.43 | 0px | Form labels, captions |
+| Label SM Strong | Stack Sans Text | 14px | 600 | 1.5 | 0px | Strong form labels |
+| Caption | Stack Sans Text | 12px | 300 | 1.33 | 1.2px | Uppercase metadata, text-transform applied |
+| Quote | Bricolage Grotesque | 30px | 400 | 1.35 | 0px | Pull quotes, testimonials |
 
 ### Principles
-- **Geometric Sans Serif Foundation**: All typography uses Stack Sans family variants, creating a cohesive, modern, tech-forward identity.
-- **Aggressive Negative Tracking on Display**: Ultra-large hero sizes (`{typography.display-xxl}` at −7.56px letter-spacing; `{typography.display-xl}` at −2.4px) create bold, compact headlines that demand attention.
-- **Weight as Hierarchy**: Heading hierarchy relies on size and weight jumps (500–600 weight), not color variation, maintaining contrast accessibility.
-- **Generous Line Heights**: Body copy and large text use 1.50–1.63 line height, enhancing readability and air in the design.
-- **Neutral Letter-Spacing**: Body and interface text use 0px letter-spacing for clarity; negative tracking is reserved for display scales only.
+- Display sizes compress with negative letter-spacing (up to `-7.56px` on hero scales) to create visual impact
+- Body copy uses generous line heights (1.5–1.6) for readability at runtime
+- Serif-free stack; all fonts are geometric sans-serif for contemporary clarity
+- Heading weights start at 600, climbing to 700 for maximum emphasis
+- Caption styling applies `text-transform: uppercase` with tracking of `1.2px`
+- Font stack falls back to system sans-serif; Google Fonts are loaded asynchronously
 
 ## 4. Component Stylings
 
 ### Buttons
 
-#### Primary (Solid)
-- **Background**: `{colors.primary}` (`#FF9E00`)
-- **Text Color**: `{colors.on-primary}` (`#222222`)
-- **Padding**: `{spacing.sm}` `{spacing.xl}` (12px 24px)
-- **Font Size**: `{typography.button}` (14px)
-- **Font Weight**: 400
-- **Line Height**: 1.43
-- **Border Radius**: `{rounded.none}` (0px)
-- **Border**: none
-- **Min Height**: 42px
+**Primary**
+- Background: `{colors.primary}` (`#0F65F4`)
+- Text Color: `{colors.canvas}` (`#FFFFFF`)
+- Font: `{typography.button-md-strong}` (16px, weight 600)
+- Padding: `0px 16px`
+- Height: 40px
+- Width: auto
+- Border: none
+- Border Radius: `{rounded.none}` (0px)
+- Box Shadow: none
 
-#### Outline
-- **Background**: `rgba(158, 158, 158, 0.05)` (light gray overlay)
-- **Text Color**: `{colors.canvas}` (`#FFFFFF`)
-- **Padding**: 12px 32px
-- **Font Size**: 16px
-- **Font Weight**: 400
-- **Line Height**: 1.5
-- **Border Radius**: `{rounded.none}` (0px)
-- **Border**: 1px solid `rgba(255, 255, 255, 0.10)`
-- **Height**: 70px
-- **Box Shadow**: none
-- **Hover State**: Border color shifts to `{colors.hairline}` (`#0F65F4`); text opacity increases.
+**Outline (Large)**
+- Background: transparent
+- Text Color: `{colors.primary}` (`#0F65F4`)
+- Font: `{typography.body-sm}` (15px, weight 500)
+- Padding: `0px 28px`
+- Height: 56px
+- Width: auto
+- Border: 2px solid `{colors.primary}` (`#0F65F4`)
+- Border Radius: `{rounded.none}` (0px)
+- Box Shadow: none
+- Hover: Border color becomes `#0F65F4`, background lightens to blue tint
 
-#### Outline Small
-- **Background**: `rgba(158, 158, 158, 0.05)`
-- **Text Color**: `rgba(255, 255, 255, 0.80)`
-- **Padding**: 8px 12px
-- **Font Size**: 16px
-- **Font Weight**: 400
-- **Line Height**: 1.5
-- **Border Radius**: `{rounded.none}` (0px)
-- **Border**: 1px solid `rgba(255, 255, 255, 0.10)`
-- **Height**: 42px
-- **Box Shadow**: none
+**Outline Small (White)**
+- Background: transparent
+- Text Color: `{colors.canvas}` (`#FFFFFF`)
+- Font: `{typography.body-md}` (16px, weight 500)
+- Padding: `0px 20px`
+- Height: 48px
+- Width: auto
+- Border: 2px solid `{colors.canvas}` (`#FFFFFF`)
+- Border Radius: `{rounded.none}` (0px)
+- Box Shadow: none
 
-#### Ghost (Icon Button)
-- **Background**: `rgba(255, 255, 255, 0.90)`
-- **Text Color**: `{colors.ink}` (`#0F172A`)
-- **Padding**: 0px
-- **Width / Height**: 40px (square)
-- **Font Size**: 16px
-- **Font Weight**: 400
-- **Border Radius**: `{rounded.none}` (0px)
-- **Border**: none
-- **Box Shadow**: none
+**Filled Light**
+- Background: `#EFF6FF`
+- Text Color: `#1E293B`
+- Font: `{typography.button-md-strong}` (16px, weight 500)
+- Padding: `0px 20px`
+- Height: 56px
+- Width: auto
+- Border: 1px solid `#3B82F6`
+- Border Radius: `{rounded.none}` (0px)
+- Box Shadow: none
 
-### Cards & Containers
+**Filled Neutral**
+- Background: `#F5F5F5`
+- Text Color: `#1E293B`
+- Font: `{typography.button-md}` (16px, weight 400)
+- Padding: `0px 20px`
+- Height: 56px
+- Width: auto
+- Border: 1px solid transparent
+- Border Radius: `{rounded.none}` (0px)
+- Box Shadow: none
 
-#### Default Card
-- **Background**: `{colors.surface}` (`#F0F4FF`)
-- **Border**: 1px solid `{colors.hairline}` (`#0F65F4`)
-- **Border Radius**: `{rounded.none}` (0px)
-- **Padding**: `{spacing.md}` (16px) to `{spacing.lg}` (20px)
-- **Box Shadow**: `{shadow.sm}` (custom oklab with micro-layering)
-- **Text Color**: `{colors.ink}` (`#0F172A`)
-
-#### Section Band (Dark)
-- **Background**: `{colors.surface-alt}` (`#020617`)
-- **Text Color**: `{colors.canvas}` (`#FFFFFF`)
-- **Padding**: `{spacing.band}` (64px) on block axis
-- **Border Radius**: `{rounded.none}` (0px)
+**Text (White Transparent)**
+- Background: `rgba(255, 255, 255, 0.1)`
+- Text Color: `{colors.canvas}` (`#FFFFFF`)
+- Font: `{typography.label-sm-strong}` (14px, weight 600)
+- Padding: `0px`
+- Height: 32px
+- Width: auto
+- Border: none
+- Border Radius: `{rounded.none}` (0px)
+- Box Shadow: none
+- Hover: Opacity increases to 1
 
 ### Inputs & Forms
 
-#### Text Input
-- **Background**: `rgba(255, 255, 255, 0.05)` (light overlay on dark; `{colors.canvas}` on light)
-- **Text Color**: `{colors.ink}` (`#0F172A`)
-- **Padding**: `{spacing.md}` (16px)
-- **Font Size**: `{typography.body-md}` (16px)
-- **Border**: 1px solid `{colors.neutral-1}` (`#D1D3D7`) or `rgba(255, 255, 255, 0.10)` on dark
-- **Border Radius**: `{rounded.none}` (0px)
-- **Line Height**: 1.50
-- **Focus State**: Border color becomes `{colors.hairline}` (`#0F65F4`); box shadow applied.
-- **Placeholder Color**: `{colors.muted}` (`#64748B`)
+**Default**
+- Background: transparent
+- Text Color: `#0B1B3A`
+- Font: `{typography.label-sm-strong}` (14px, weight 600)
+- Padding: `0px 6px`
+- Height: 34px
+- Border: 1px solid transparent (or context-dependent)
+- Border Radius: `{rounded.none}` (0px)
+- Focus: Border color becomes `{colors.primary}` (`#0F65F4`), outline applied
+- Disabled: Opacity reduced to 0.4
 
-#### Label
-- **Font Size**: `{typography.label}` (14px)
-- **Font Weight**: 500
-- **Color**: `{colors.ink}` (`#0F172A`)
-- **Line Height**: 1.43
-- **Margin Bottom**: `{spacing.xs}` (8px)
+### Cards & Containers
+
+**Default**
+- Background: transparent or context-inherited
+- Text Color: `{colors.ink}` (`#334155`)
+- Font: `{typography.body-md}` (16px, weight 400)
+- Padding: `0px` (layout dependent)
+- Border: none (or 1px context-dependent)
+- Border Radius: `{rounded.none}` (0px)
+- Box Shadow: depth applied via elevation scale (see Section 6)
+
+**Surface Card (Dark)**
+- Background: `{colors.surface}` (`#0A1430`)
+- Text Color: `{colors.canvas}` (`#FFFFFF`)
+- Border Radius: `{rounded.none}` (0px)
+- Box Shadow: `rgba(15, 23, 42, 0.45) 0px 24px 48px -12px` (sm level)
 
 ### Navigation
 
-#### Primary Navigation Bar
-- **Background**: `{colors.canvas}` (`#FFFFFF`) or transparent
-- **Text Color**: `{colors.accent}` (`#334155`)
-- **Padding**: 0px (relies on container padding)
-- **Height**: 72px
-- **Font Size**: `{typography.nav}` (24px)
-- **Font Weight**: 400
-- **Border**: none
-- **Display**: Horizontal flex; collapses to hamburger toggle on mobile.
+**Header Default**
+- Background: `{colors.canvas}` (`#FFFFFF`)
+- Text Color: `{colors.ink}` (`#334155`)
+- Font: `{typography.body-md}` (16px, weight 400)
+- Padding: varies by screen
+- Height: 72px (desktop)
+- Border: none
+- Box Shadow: none
 
-#### Navigation Link (Hover)
-- **Text Color**: `{colors.hairline}` (`#0F65F4`)
-- **Transition**: smooth color change
-- **Underline**: optional accent underline on hover
+**Navigation Links**
+- Text Color: `{colors.ink}` (`#334155`)
+- Font: `{typography.body-md}` (16px, weight 400)
+- Hover: Text color becomes `{colors.primary}` (`#0F65F4`)
 
 ### Footer
 
-#### Footer Container
-- **Background**: `{colors.surface-alt}` (`#020617`)
-- **Text Color**: `{colors.canvas}` (`#FFFFFF`)
-- **Padding**: `{spacing.band}` (64px) on block axis
-- **Font Size**: `{typography.body-md}` (16px)
-- **Font Weight**: 400
-- **Border**: none
-- **Border Radius**: `{rounded.none}` (0px)
-
-#### Footer Link
-- **Text Color**: `{colors.canvas}` (`#FFFFFF`)
-- **Text Decoration**: none
-- **Hover State**: Opacity to 0.70 or color shifts to `{colors.primary}` (`#FF9E00`)
+**Default**
+- Background: `{colors.surface-alt}` (`#020617`)
+- Text Color: `{colors.canvas}` (`#FFFFFF`)
+- Font: `{typography.button-md}` (16px, weight 400)
+- Padding: section-based spacing
+- Border: none
+- Box Shadow: none
 
 ## 5. Layout Principles
 
 ### Spacing System
 
-UpLayer employs a modular spacing scale derived from a `{spacing.xxs}` (4px) base unit, scaling by factors of 2 and 1.5 to create visual rhythm and breathing room.
+Base unit: `{spacing.xs}` (8px)
 
-- `{spacing.xxs}` = 4px — Minimal gaps between adjacent elements
-- `{spacing.xs}` = 8px — Tight spacing within component groups
-- `{spacing.sm}` = 12px — Small internal padding
-- `{spacing.md}` = 16px — Default body copy line-height offset; general padding
-- `{spacing.lg}` = 20px — Spacious internal padding; heading bottom margin
-- `{spacing.xl}` = 24px — Large component spacing; button padding
-- `{spacing.xxl}` = 32px — Inter-component gaps
-- `{spacing.xxxl}` = 40px — Large section dividers
-- `{spacing.section}` = 48px — Primary section block padding (top/bottom)
-- `{spacing.band}` = 64px — Hero and major section spacing; full-width band padding
+**Full Scale:**
+- `{spacing.xxs}` (4px) — Micro-spacing between inline elements
+- `{spacing.xs}` (8px) — Tight element grouping
+- `{spacing.sm}` (12px) — Compact sections
+- `{spacing.md}` (16px) — Standard content padding and gaps
+- `{spacing.lg}` (20px) — Medium section separation
+- `{spacing.xl}` (24px) — Large feature padding
+- `{spacing.xxl}` (32px) — Major section breaks
+- `{spacing.xxxl}` (36px) — Large breathing room
+- `{spacing.section}` (40px) — Section vertical rhythm
+- `{spacing.band}` (48px) — Hero/band padding, maximum separation
 
 **Usage Context:**
-- Buttons and small inputs: `{spacing.sm}` to `{spacing.md}` internal padding.
-- Cards and containers: `{spacing.md}` to `{spacing.lg}` padding.
-- Section spacing (vertical): `{spacing.section}` to `{spacing.band}` as block-axis padding.
-- Gap between blocks (horizontal flex): `{spacing.xl}` to `{spacing.xxl}`.
+- Button padding: `{spacing.md}` (16px)
+- Card padding: `{spacing.xl}` to `{spacing.xxl}` (24–32px)
+- Section vertical padding: `{spacing.section}` to `{spacing.band}` (40–48px)
+- Inline gaps: `{spacing.xs}` to `{spacing.md}` (8–16px)
 
 ### Grid & Container
 
-- **Max Width**: 1280px (enforced at 1280px+ breakpoints; 100% below).
-- **Content Column Width**: 1280px at 1280px+ breakpoint; 976px at 1024px; 720px at 768px; 343px at 375px.
-- **Column Count**: 6 columns (measured at 1024px+); 4 columns (at 375–768px).
-- **Section Padding**: 0px horizontal padding at all breakpoints; whitespace managed via max-width container.
-- **Grid Approach**: CSS Grid or flex-based layout with responsive column collapse; 6-column grid on desktop, 4-column on tablet, 1–2 column on mobile.
+- Max width: 1280px on 1440px+ viewports; full bleed below
+- Column count: 7 columns across all breakpoints (measured)
+- Section padding (horizontal): 0px (full-width sections, internal padding managed by containers)
+- Standard gutter: `{spacing.md}` (16px) between grid items
+- Hero sections: full viewport width with internal content centering
 
 ### Whitespace Philosophy
 
-The system prioritizes generous breathing room, achieved through:
-- Large block-axis spacing between sections (`{spacing.section}` to `{spacing.band}`).
-- Minimal horizontal padding on sections (0px), relying on max-width constraints.
-- Adequate line-height on body copy (1.50–1.63) for visual rest.
-- Decorative gradients and blurred overlays used sparingly to avoid visual clutter.
-- Contrast through color blocking (dark vs. light sections) rather than dense borders or dividers.
+Whitespace is treated as a primary design tool. Large sections breathe with `{spacing.band}` (48px) vertical padding. Body copy sits in generously padded containers with minimum `{spacing.xl}` (24px) margins. Hero messaging floats center with substantial top and bottom clearance. Navigation and footers use compact `{spacing.md}` (16px) padding, maintaining visual hierarchy without overwhelming the page.
 
 ### Border Radius Scale
 
-UpLayer employs a minimal, binary border-radius strategy:
+- `{rounded.none}` (0px) — Applied to all interactive components: buttons, inputs, cards, images
 
-- `{rounded.none}` = 0px — **All interactive components** (buttons, inputs, cards, images). Creates a technical, sharp aesthetic.
-- `{rounded.full}` = 9999px — Reserved for edge cases; not used on primary UI components.
-
-**Component-Specific Application:**
-- Buttons (all variants): 0px
-- Input fields: 0px
-- Cards: 0px
-- Images: 0px
-- Decorative shapes: 9999px (pills or circles where applicable).
-
-### Border Widths
-
-- **Thin** (`{border-width-thin}` = 1px): Applied to button outlines, card borders, input field borders, and divider lines.
-- No thicker borders are employed in the primary component palette; shadows and color blocking provide depth instead.
+The system uses sharp, geometric forms throughout. No pill-shaped or rounded corners exist in the core component library. This creates a contemporary, structured aesthetic that reinforces enterprise reliability.
 
 ## 6. Depth & Elevation
 
-UpLayer employs a **layered-micro elevation strategy**, using multiple translucent shadow layers to create subtle, barely-there depth. Shadows are custom, using `oklab` color space and opacity blending for precise control.
+Elevation is achieved through color blocking and micro-layered shadows rather than dramatic dimensional changes.
 
 | Level | Treatment | Use |
-|---|---|---|
-| **Flat** | No shadow | Backgrounds, cards on `{colors.surface}` without lift |
-| **Micro (SM)** | `rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.999994 0.0000455678 0.0000200868 / 0.2) 0px 0px 0px 1px, oklab(0.553484 -0.0356502 -0.22454 / 0.4) 0px 10px 15px -3px, oklab(0.553484 -0.0356502 -0.22454 / 0.4) 0px 4px 6px -4px` | Primary cards and interactive surfaces; minimal lift |
-| **Micro (MD)** | `rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.553484 -0.0356502 -0.22454 / 0.25) 0px 10px 15px -3px, oklab(0.553484 -0.0356502 -0.22454 / 0.25) 0px 4px 6px -4px` | Secondary cards and containers; reduced shadow intensity |
-| **Micro (LG)** | `rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(15, 23, 42, 0.06) 0px 8px 24px 0px` | Elevated surfaces, modals, overlays; most visible shadow tier |
+|-------|-----------|-----|
+| Flat | No shadow, background only | Base page, surfaces at rest |
+| SM | `rgba(15, 23, 42, 0.45) 0px 24px 48px -12px` | Floating cards, hover modals, primary floating elements |
+| MD | `rgba(15, 23, 42, 0.28) 0px 24px 48px -16px` | Secondary floating cards, popovers |
+| LG | `rgba(15, 23, 42, 0.35) 0px 20px 40px -16px` | Tertiary elevation, tooltips |
+| XL | `rgba(15, 23, 42, 0.35) 0px 16px 32px -14px` | Maximum elevation for modals, overlays |
 
 **Shadow Philosophy:**
-The system avoids bold drop shadows in favor of multiple thin layers using `oklab` color space. This creates depth through light diffusion and soft focus rather than hard contrast, maintaining visual refinement while indicating elevation. The micro-layering approach ensures that depth is felt rather than seen, preserving the clean, technical aesthetic.
+
+All shadows use a single offset-shadow layer (negative vertical offset with blur/spread) applied over transparent placeholder layers. This creates a barely-perceptible lift without volumetric depth. The darkened shadow color (`rgba(15, 23, 42, ...)`) is calibrated to feel like soft ambient shadow rather than hard drop-shadow. Opacity values range from 0.28 to 0.45, ensuring shadows never dominate the interface.
 
 ### Opacity Levels
 
-UpLayer defines specific opacity values for interactive states and overlays:
-
-- 0.15 — Minimal overlay; ghost button backgrounds
-- 0.20 — Light disabled state; hover backgrounds
-- 0.55 — Medium opacity; secondary interactive states
-- 0.60 — Moderate opacity; hover and focus enhancements
-- 0.80 — High visibility; button text on light backgrounds
-- 0.90 — Near-full opacity; light button fills
-
-These values are applied to interactive state changes (hover, focus, disabled) and overlay backgrounds layered over other content.
+- 20% (`0.20`) — Very subtle transparency, almost imperceptible
+- 40% (`0.40`) — Disabled state background tint or overlay filter
+- 45% (`0.45`) — Shadow ambient transparency
+- 55% (`0.55`) — Medium transparency for hover overlays
+- 70% (`0.70`) — Reduced opacity for secondary elements
+- 75% (`0.75`) — Slightly transparent interactive states
 
 ### Z-index / Layering
 
-UpLayer employs a structured z-index scale to manage layer stacking:
+The stacking context follows a flat but purposeful layering model:
 
-- **Base** (z-index: 0): Default page content and sections
-- **Dropdown / Menu** (z-index: 10–20): Navigation dropdowns and contextual menus
-- **Sticky / Fixed** (z-index: 50–60): Sticky headers, fixed navigation bars, persistent UI
-- **Modal** (z-index: 9999): Full-screen modals, dialogs, overlays requiring highest precedence
+- **Base** (`1–4`) — Content layers, stacking order within a section
+- **Dropdown** (`10–40`) — Menu drops, popovers, floating panels
 
-This scale prevents z-index conflicts and maintains predictable stacking behavior across interactive scenarios.
+No z-index values exceed 40 in the measured extract. Layers are kept close to avoid visual confusion.
 
 ## 7. Do's and Don'ts
 
 ### Do
-- Use sharp, 0px border radius on all interactive components (buttons, inputs, cards) to maintain the technical, orthogonal aesthetic.
-- Apply `{colors.primary}` (`#FF9E00`) sparingly for CTAs and focal accents; reserve it for high-priority actions.
-- Layer micro-shadows using `oklab` color space for depth without visual clutter; avoid harsh drop shadows.
-- Employ generous `{spacing.band}` (64px) and `{spacing.section}` (48px) for breathing room between major sections.
-- Use negative letter-spacing (−7.56px to −2.4px) only on display-scale typography (96px+) for dramatic, compact headlines.
-- Maintain high contrast between `{colors.ink}` (`#0F172A`) and `{colors.canvas}` (`#FFFFFF`) for accessibility on body copy.
-- Group related inputs and buttons using tight spacing (`{spacing.xs}` to `{spacing.sm}`) within containers.
-- Apply color blocking (dark vs. light sections) to differentiate content zones instead of relying on borders alone.
-- Scale typography responsively: 48px heading at 768px+ breakpoints; down-scale appropriately on mobile.
-- Test hover and focus states explicitly; ensure `{colors.hairline}` (`#0F65F4`) border highlights are visible on all interactive elements.
+- Use `{colors.primary}` (`#0F65F4`) for all primary CTAs and high-emphasis interactive elements
+- Apply `{rounded.none}` (0px) border radius to maintain the sharp, structured aesthetic
+- Follow the typography hierarchy exactly: use `{typography.display-xl-strong}` for hero headings, `{typography.body-md}` for runtime copy
+- Preserve negative letter-spacing on display sizes (e.g., `-7.56px` on hero scales) for visual impact
+- Build depth through shadow micro-layers and color blocking, not border or stroke weight
+- Group related actions horizontally with `{spacing.md}` (16px) gaps
+- Use `{colors.hairline}` (`#DBE7FB`) for subtle 1px dividers and section borders
+- Reserve `{colors.canvas}` (`#FFFFFF`) as the default background; nest surfaces in `{colors.surface}` (`#0A1430`) for dark containers
+- Apply 40–48px vertical padding (`{spacing.section}` to `{spacing.band}`) between major sections for breathing room
 
 ### Don't
-- Never use rounded corners (9999px) on buttons, inputs, or primary cards; maintain 0px radius throughout the UI.
-- Don't overuse `{colors.primary}` (`#FF9E00`); reserve it for primary CTAs, brand marks, and focal accents only.
-- Avoid multiple decoration layers (overlaid gradients, patterns, and blurs) on the same section; max two gradient overlays per hero.
-- Don't apply negative letter-spacing to body copy or headings below 72px; use 0px tracking for standard hierarchy.
-- Never stack more than two shadow layers on a single component; rely on surface color and micro-layering instead.
-- Don't reduce line-height below 1.25 on headings or 1.50 on body copy; maintain readability and visual rest.
-- Avoid high-saturation accent colors outside the approved palette; stick to `{colors.accent-1}` (teal), `{colors.accent-2}`, and `{colors.accent-3}` for decorative use only.
-- Don't disable form labels or reduce their visual prominence; always maintain label–input hierarchy.
-- Never apply opacity below 0.15 to interactive elements; ensure disabled states remain visually distinct and accessible.
-- Don't collapse the navigation menu toggle until 1024px breakpoint; maintain visible nav links up to 1024px viewport width.
+- Round corners on any interactive component; maintain sharp geometry throughout
+- Apply multiple box-shadow layers; use the single-layer shadow scale (sm, md, lg, xl)
+- Overuse accent colors; `{colors.accent}` (`#FF9E00`) is for secondary emphasis only, not runtime CTAs
+- Increase padding beyond `{spacing.band}` (48px) without reason; respect the rhythm
+- Use colors outside the measured palette; all UI colors are semantic and studied
+- Apply letter-spacing other than the specified values; typography spacing is intentional
+- Mix border styles; use none or 1–2px solid only
+- Layer more than 4 z-index stacks within a viewport; keep the hierarchy flat
+- Hide heading hierarchy information; always use proper semantic sizing
 
 ## 8. Responsive Behavior
 
 ### Breakpoints
 
-| Breakpoint | Viewport Width | Content Width | Grid Columns | Nav Visible | Menu Toggle | Display Heading | Body Font | Section Padding X |
-|---|---|---|---|---|---|---|---|---|
-| Mobile | 375px | 343px | 4 | 10 links | Yes | 36px | 16px | 0px |
-| Tablet | 768px | 720px | 4 | 10 links | Yes | 48px | 16px | 0px |
-| Desktop Small | 1024px | 976px | 6 | 17 links | Yes | 48px | 16px | 0px |
-| Desktop Large | 1280px | 1280px | 6 | 17 links | No | 48px | 16px | 0px |
-| Desktop XL | 1440px | 1280px | 6 | 17 links | No | 48px | 16px | 0px |
+| Viewport | Content Width | Grid Columns | Nav Links Visible | Menu Toggle | Display Heading | Body Text | Section Padding X |
+|----------|---------------|--------------|-------------------|-------------|-----------------|-----------|-------------------|
+| 375px (Mobile) | 375px | 7 | 0 | Yes | 42px (`{typography.display-lg-tight}`) | 16px | 0px |
+| 768px (Tablet) | 768px | 7 | 0 | Yes | 60px (compressed) | 16px | 0px |
+| 1024px (Desktop) | 1024px | 7 | 8 | No | 72px (`{typography.display-xl}`) | 16px | 0px |
+| 1280px (Desktop HD) | 1280px | 7 | 8 | No | 72px (`{typography.display-xl}`) | 16px | 0px |
+| 1440px (Wide) | 1280px (capped) | 7 | 8 | No | 72px (`{typography.display-xl}`) | 16px | 0px |
 
-**Key Transition Points:**
-- **375px → 768px**: Column count remains 4; content width scales from 343px to 720px.
-- **768px → 1024px**: Column count increases to 6; content width grows to 976px; menu toggle remains visible.
-- **1024px → 1280px**: Content width reaches max 1280px; nav menu toggle hidden; full nav links displayed (17 visible).
-- **1280px+**: Content width caps at 1280px; grid and typography remain stable.
+**Collapse Point:** Navigation menu collapses and toggle button appears between 768px and 1024px viewports. All body text remains 16px across all breakpoints.
 
 ### Touch Targets
 
-Minimum interactive element sizes for mobile usability:
-
-- **Button Height**: 42px minimum (outline-small variant); 70px on larger CTAs.
-- **Button Width**: Contextual; minimum 40px for icon buttons (`{rounded.none}` square).
-- **Input Fields**: 42px minimum height.
-- **Navigation Link Padding**: `{spacing.md}` (16px) horizontal; `{spacing.sm}` (12px) vertical.
-- **Link Hit Area**: 44px × 44px minimum (WCAG recommendation); adjust padding to meet this on small screens.
+- Minimum interactive element size: 40px (buttons, links, inputs)
+- Desktop-optimized sizes: 48–56px for primary actions
+- Spacing between touch targets: minimum `{spacing.md}` (16px)
 
 ### Collapsing Strategy
 
-- **Navigation**: At 1024px and below, hamburger menu toggle appears (z-index: 60); full horizontal nav hidden. At 1280px+, toggle hidden; full nav displayed inline.
-- **Grid Layout**: 4-column layout on mobile (375–768px); transitions to 6-column on desktop (1024px+). Adjust card width and padding per breakpoint.
-- **Typography**: Display heading scales down from 72px (1024px+) to 48px (768px) to 36px (375px). Body copy remains 16px across all breakpoints.
-- **Section Padding**: Block-axis spacing scales: `{spacing.section}` (48px) on desktop; reduce to `{spacing.lg}` (20px) on mobile for compact layouts.
-- **Hero Image/Decoration**: Right-side decorative 3D element (hero star, gradient shapes) hidden on mobile (< 768px); visible on tablet+.
-- **Multi-Column Cards**: Cards stack vertically (1 column) on mobile; 2 columns on tablet (768px+); 3+ columns on desktop (1024px+).
+- **Mobile (375px–768px):** Full-width layouts with zero horizontal padding; content spans edge-to-edge. Navigation hides behind toggle. Display heading shrinks to 42–60px. All buttons scale to fit container width.
+- **Desktop (1024px+):** Max-width container of 1280px centers on the viewport. Display heading expands to 72px. Navigation becomes horizontal menu bar. Sections gain left/right margins as needed.
+- **Grid Stability:** 7-column grid is consistent; no reflow between breakpoints, layout remains mathematically rigid.
 
 ## 9. Agent Prompt Guide
 
 ### Quick Color Reference
 
-When implementing UpLayer-inspired components, use these semantic mappings:
+Implement UI elements using these semantic color assignments:
 
-- **Primary CTA Button**: Brand Accent (`{colors.primary}` — `#FF9E00`)
-- **Page Background**: Canvas (`{colors.canvas}` — `#FFFFFF`)
-- **Card Background**: Surface (`{colors.surface}` — `#F0F4FF`)
-- **Dark Section Band**: Surface Alt (`{colors.surface-alt}` — `#020617`)
-- **Primary Heading Text**: Ink (`{colors.ink}` — `#0F172A`)
-- **Secondary / Body Text**: Accent (`{colors.accent}` — `#334155`)
-- **Caption / Muted Text**: Muted (`{colors.muted}` — `#64748B`)
-- **Link / Focus State**: Hairline (`{colors.hairline}` — `#0F65F4`)
-- **Success State**: Success (`{colors.success}` — `#00B894`)
-- **Button Border (Outline)**: Neutral Divider (`{colors.neutral-1}` — `#D1D3D7`) or white with low opacity
-- **Text on Primary**: On Primary (`{colors.on-primary}` — `#222222`)
+- **Primary CTA:** `{colors.primary}` (`#0F65F4`) — All primary action buttons, active navigation, key links
+- **Background (default):** `{colors.canvas}` (`#FFFFFF`) — Page base, light surfaces
+- **Background (dark):** `{colors.surface}` (`#0A1430`) — Card/panel containers, dark sections
+- **Heading Text:** `{colors.ink}` (`#334155`) — All h1–h5 and semantic headings
+- **Body Text:** `{colors.body}` (`#64748B`) — Runtime paragraph copy
+- **Borders & Dividers:** `{colors.hairline}` (`#DBE7FB`) — 1px lines, subtle separation
+- **Secondary Accent:** `{colors.accent}` (`#FF9E00`) — Highlight, hero bands, non-primary emphasis
+- **Success State:** `{colors.success}` (`#00B894`) — Confirmations, checkmarks, positive outcomes
 
 ### Iteration Guide
 
-1. **Start with typography hierarchy**: Use Stack Sans family variants; apply aggressive negative letter-spacing (−7.56px to −2.4px) only to display sizes (96px+). Maintain 0px tracking on all body and heading copy below 72px.
-
-2. **Apply zero border radius consistently**: All interactive components (buttons, inputs, cards, images) use `{rounded.none}` (0px). Do not round any primary UI elements; maintain the sharp, orthogonal aesthetic.
-
-3. **Layer depth with micro-shadows**: Use multi-layer `oklab`-based shadows; never apply a single hard drop shadow. Reference the three shadow tiers (sm, md, lg) for appropriate elevation on cards, buttons, and sections.
-
-4. **Color block sections instead of adding borders**: Alternate `{colors.canvas}` (`#FFFFFF`) and `{colors.surface-alt}` (`#020617`) sections to define zones. Use `{colors.surface}` (`#F0F4FF`) for secondary card backgrounds. Avoid excessive divider lines.
-
-5. **Reserve `{colors.primary}` for focal accents**: Only apply `#FF9E00` to primary CTAs, brand marks, and active states. Use `{colors.accent}` (`#334155`) and `{colors.accent-1}` to `{colors.accent-3}` for secondary and decorative purposes.
-
-6. **Implement responsive grid collapse at 1024px**: Desktop (1024px+) uses 6-column grid; tablet (768px) uses 4-column; mobile (375px) uses 1–2 column layouts. Nav menu toggle appears below 1024px.
-
-7. **Ensure high contrast for accessibility**: Maintain WCAG AA contrast (4.5:1+) between `{colors.ink}` and `{colors.canvas}` for body text. Test all link colors against background surfaces.
-
-8. **Emphasize hover states with color and opacity shifts**: On interactive elements, shift border color to `{colors.hairline}` (`#0F65F4`) and increase text opacity (e.g., 0.80 → 1.00). Reference hover state data for exact color and opacity shifts per component.
-
-9. **Scale spacing with the modular scale**: Use multiples of `{spacing.md}` (16px) for consistency. Section spacing: `{spacing.section}` (48px) typical; `{spacing.band}` (64px) for hero/major sections. Component internal padding: `{spacing.sm}` to `{spacing.lg}`.
-
-10. **Test all interactive states explicitly**: Verify button hover, focus, and disabled states. Confirm input focus borders appear in `{colors.hairline}` (`#0F65F4`). Validate z-index stacking (dropdowns at 10–20; modals at 9999) in overlapping scenarios.
+1. **Start with structure:** All interactive components use `{rounded.none}` (0px). No exceptions.
+2. **Establish hierarchy:** Headings scale from `{typography.heading-xs}` (18px) to `{typography.display-xl-strong}` (72px). Body text is `{typography.body-md}` (16px, weight 300).
+3. **Apply primary blue:** `{colors.primary}` (`#0F65F4`) is the dominant brand. Use it for CTAs, focus states, and key interactive feedback.
+4. **Space generously:** Sections use `{spacing.section}` to `{spacing.band}` (40–48px) vertical padding. Cards use `{spacing.xl}` to `{spacing.xxl}` (24–32px) internal padding.
+5. **Use shadows for depth:** Apply the sm–xl shadow scale (`{colors.surface}` cards with sm shadow). Never invent shadows; use the measured scale only.
+6. **Respect typography negatives:** Display sizes compress with negative letter-spacing (down to `-7.56px`). This is intentional and brands the hero.
+7. **Test responsive:** Mobile layout (375px) hides navigation and uses 42px display heading. Desktop (1024px+) shows full nav and 72px heading.
+8. **Color-block over emboss:** Depth comes from background colors and shadows, not borders or texture.
 
 ## 10. Known Gaps
 
-- **Interaction States (Limited Coverage)**: Extraction captured raw hover state CSS, but interaction state design (hover, active, focus, disabled, visited) is not uniformly documented. Only :hover and :focus-visible CSS rules were extracted; other interaction variants (`:active`, `:disabled`, `:visited`) may exist but were not measured. Implementers should test all interactive states explicitly.
-
-- **Decorative Accent Colors (Unassigned Role)**: Four extracted accent colors (`{colors.accent-1}` `#0B3DA8`, `{colors.accent-2}` `#14B8A6`, `{colors.accent-3}` `#5A9AFF`) have no measured functional role. These appear decorative (in gradients, overlays, or illustrations). No evidence of their use in UI components was observed.
-
-- **Dark Mode / Derived Theme**: The extracted tokens include only a single, measured theme. Any dark-mode behavior (if present on the live site) was not explicitly observed or measured during extraction. Do not assume a light/dark mode system exists beyond what is documented here.
-
-- **Limited Component Coverage**: Extraction measured buttons (3 variants), navigation, footer, and links. Other components (modals, tooltips, popovers, date pickers, tabs, breadcrumbs, pagination) were not present on the analyzed page(s) or were not extractable. Their styling is not documented here.
-
-- **Cross-Origin Stylesheets**: Some stylesheets may have been cross-origin or blocked during extraction, resulting in incomplete CSS coverage. Custom CSS-in-JS or dynamically injected styles may not be fully captured.
-
-- **Surfaces Behind Authentication**: The analyzed page is public-facing (homepage). Any authenticated or paywalled surfaces were not visited, so design tokens for those areas are not available.
-
-- **Micro-Animation & Transition Timing**: No duration, easing function, or animation timing data was extracted. Transitions and animations visible on the live site are not documented in this design system.
-
-- **Video / Media Background Handling**: Hero section contains video/animated content (loading spinner observed in screenshot). No design data for video playback controls, fallback states, or loading states was extracted.
-
-- **Print Styles & Accessibility (ARIA)**: No print media queries or ARIA-specific styling was measured. Ensure print styles and accessible naming conventions are added during implementation.
+- **Interaction states not captured:** The extraction measured `:hover`, `:focus`, and `:disabled` states in abstract terms (opacity/color changes) but did not capture specific component-level interactivity (e.g., focused button appearance, disabled input styling, active link indicators). Implement interaction states conservatively using the provided opacity levels (0.4, 0.7 for disabled; 0.75–1 for hover).
+- **Decorative color roles:** 7 accent colors (`{colors.accent-1}` through `{colors.accent-6}`) were measured but lack assigned semantic roles. They appear in gradients and hero decorative patterns only; do not repurpose them for UI elements.
+- **Unobserved surfaces:** The extraction was limited to publicly accessible pages. Authentication gates, admin dashboards, and logged-in experiences were not analyzed.
+- **Animation and transition:** No animation durations, easing curves, or transition timings were extracted. The document addresses static appearance only.
+- **Adaptive color themes:** No dark mode, light mode toggling, or system preference detection was measured. All colors reflect the single measured theme.
+- **Cross-origin stylesheets:** Some imported stylesheets may have been inaccessible during extraction, potentially missing supplemental component states or utility classes.
+- **Advanced component variants:** Modals, popovers, tooltips, and complex form states may exist but were not fully captured. Implement using the shadow and color scales provided.
+- **Accessibility tokens:** No ARIA labels, focus management, or keyboard navigation specifics were extracted. Implement semantic HTML and standard focus rings following WCAG 2.1 AA.
 
 ---
 
-**Document Version**: 1.0  
-**Last Analyzed**: UpLayer.agency (homepage)  
+**Document Version**: 2.0
+**Last Analyzed**: upsell-experience.uplayer.agency (homepage)
 **Extraction Scope**: Single page; public-facing surfaces only.

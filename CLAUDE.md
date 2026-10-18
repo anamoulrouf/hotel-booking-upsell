@@ -22,7 +22,7 @@ Implementation plans live in [upsell-research/docs/](upsell-research/docs/). Rea
 | [07-e2e-test-cases.md](upsell-research/docs/07-e2e-test-cases.md) | The 45 E2E cases — test titles mirror case IDs |
 | [08-security-legal.md](upsell-research/docs/08-security-legal.md) | Injection defenses, crawl legality, claims discipline |
 | [09-milestones.md](upsell-research/docs/09-milestones.md) | M0–M8 with exit criteria, env vars, DoD |
-| [10-DESIGN.md](upsell-research/docs/10-DESIGN.md) | Design system (measured from uplayer.agency): tokens, type, components — **the UI source of truth** |
+| [10-DESIGN.md](upsell-research/docs/10-DESIGN.md) | Design system (measured from upsell-experience.uplayer.agency): tokens, type, components — **the UI source of truth** |
 | [11-build-plan-m2-m8.md](upsell-research/docs/11-build-plan-m2-m8.md) | Task-level implementation plan for the remaining milestones, with current state |
 | [12-deploy-runbook.md](upsell-research/docs/12-deploy-runbook.md) | Fly + Vercel + Inngest deployment steps and post-deploy smoke |
 

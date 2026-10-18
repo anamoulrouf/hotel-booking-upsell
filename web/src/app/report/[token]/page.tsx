@@ -76,7 +76,7 @@ function SectionHead({ title, sub }: { title: string; sub: string }) {
 function FixChip({ small }: { small?: boolean }) {
   return (
     <span
-      className={`bg-brand text-on-primary inline-flex px-2.5 py-1 font-normal ${
+      className={`bg-brand text-on-brand inline-flex px-2.5 py-1 font-normal ${
         small ? "text-[12px] leading-[18px]" : "text-xs leading-[18px]"
       }`}
     >
@@ -298,7 +298,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                   </p>
                   {est ? (
                     <>
-                      <p className="font-notch mt-2 text-5xl font-semibold text-[#4F8CFC] lg:text-[52px]">
+                      <p className="font-notch mt-2 text-5xl font-semibold text-[#5A9AFF] lg:text-[52px]">
                         {money(est.potentialLow)}–{money(est.potentialHigh)}
                       </p>
                       <p className="mt-2 text-xs font-light text-white/50">estimate · pre-arrival revenue</p>
@@ -381,7 +381,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                 <CtaButton
                   token={token}
                   placement="band"
-                  variant="amber"
+                  variant="primary"
                   testid="cta-band-button"
                   className="w-full sm:w-auto"
                 />
@@ -468,7 +468,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                         <div className="flex h-full min-w-0 flex-1 flex-col gap-2 overflow-clip">
                           <div className="bg-border/30 relative min-h-0 flex-1 overflow-clip">
                             <div
-                              className="absolute bottom-0 w-full bg-[#4F8CFC]"
+                              className="absolute bottom-0 w-full bg-[#5A9AFF]"
                               style={{ height: `${barPct(est.potentialHigh)}%` }}
                             />
                           </div>
@@ -488,7 +488,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                   </div>
                 </div>
               ) : (
-                <div className="bg-card border-hairline/20 mt-5 border p-5">
+                <div className="bg-card border-hairline mt-5 border p-5">
                   <p className="text-body text-sm font-light">
                     Room count wasn&apos;t found on your public pages. Add it at unlock and this section computes your
                     potential, what you already capture, and what&apos;s missing.
@@ -507,7 +507,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                     return (
                       <div
                         key={a.area}
-                        className="bg-card border-hairline/20 shadow-upl-sm flex flex-col items-start gap-4 self-stretch border p-6"
+                        className="bg-card border-hairline shadow-upl-sm flex flex-col items-start gap-4 self-stretch border p-6"
                       >
                         <div className="flex w-full items-start gap-4">
                           <div className="min-w-0 flex-1">
@@ -544,7 +544,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
               />
               <div className="pt-5">
                 {row.unlocked ? (
-                  <div className="bg-card border-hairline/20 shadow-upl-sm border p-5 md:p-6">
+                  <div className="bg-card border-hairline shadow-upl-sm border p-5 md:p-6">
                     <RoiEditor
                       token={token}
                       rooms={row.hotel.roomCount ?? 40}
@@ -622,7 +622,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                   return (
                     <li
                       key={a.area}
-                      className="bg-card border-hairline/20 shadow-upl-sm flex flex-col items-start gap-8 border p-6 lg:flex-row lg:items-center"
+                      className="bg-card border-hairline shadow-upl-sm flex flex-col items-start gap-8 border p-6 lg:flex-row lg:items-center"
                     >
                       <div className="w-full shrink-0 lg:w-60">
                         <p
@@ -705,7 +705,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                 </span>
               </div>
               {foundPackages.length ? (
-                <div className="bg-card border-hairline/20 shadow-upl-sm mt-5 overflow-x-auto border px-5 py-2">
+                <div className="bg-card border-hairline shadow-upl-sm mt-5 overflow-x-auto border px-5 py-2">
                   <table className="w-full min-w-[560px] text-left text-sm">
                     <thead>
                       <tr>
@@ -724,7 +724,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                         const checks = [p.hasPhoto, p.hasPrice, p.hasDescription];
                         const score = checks.filter(Boolean).length;
                         return (
-                          <tr key={p.name} className="border-hairline/15 border-t">
+                          <tr key={p.name} className="border-hairline border-t">
                             <td className="text-ink py-3 pr-4 font-normal">{p.name}</td>
                             <td className="text-body py-3 pr-4 font-light">
                               {CATEGORY_LABELS[p.category ?? ""] ?? p.category ?? "—"}
@@ -746,7 +746,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                   </table>
                 </div>
               ) : (
-                <div className="bg-card border-hairline/20 shadow-upl-sm mt-5 border p-5">
+                <div className="bg-card border-hairline shadow-upl-sm mt-5 border p-5">
                   <p className="text-body text-sm font-light">
                     No sellable items spotted yet — the next build reads deeper (booking engine extras, OTA listings)
                     and drafts package ideas for your hotel type.
@@ -766,15 +766,15 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                     />
                     <div className="grid gap-4 pt-5 md:grid-cols-2 lg:grid-cols-3">
                       {suggestedPackages.map((idea) => (
-                        <div key={idea.name} className="bg-card border-hairline/20 shadow-upl-sm border p-5">
+                        <div key={idea.name} className="bg-card border-hairline shadow-upl-sm border p-5">
                           <div className="flex items-baseline justify-between gap-3">
                             <h3 className="text-ink text-sm font-semibold">{idea.name}</h3>
-                            <span className="border-hairline/30 text-muted-foreground shrink-0 border px-2 py-0.5 text-[10px] font-normal uppercase tracking-[0.14em]">
+                            <span className="border-hairline text-muted-foreground shrink-0 border px-2 py-0.5 text-[10px] font-normal uppercase tracking-[0.14em]">
                               Suggested
                             </span>
                           </div>
                           <p className="text-body mt-2 text-sm font-light leading-[1.6]">{idea.description}</p>
-                          <dl className="text-muted-foreground mt-4 space-y-1 border-t border-hairline/15 pt-3 text-xs">
+                          <dl className="text-muted-foreground mt-4 space-y-1 border-t border-hairline pt-3 text-xs">
                             {idea.guestFit ? <div>fits: <span className="text-body">{idea.guestFit}</span></div> : null}
                             {idea.timing ? <div>best timing: <span className="text-body">{idea.timing}</span></div> : null}
                             {idea.priceMin != null ? (
@@ -865,7 +865,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                     const page = guestPages.find((g) => g.profile === profile.id);
                     const accent = row.brandAssets?.primary ?? "#FF9E00";
                     return (
-                      <div key={profile.id} className="bg-card border-hairline/20 shadow-upl-sm border" data-testid={`guest-${profile.id}`}>
+                      <div key={profile.id} className="bg-card border-hairline shadow-upl-sm border" data-testid={`guest-${profile.id}`}>
                         <div style={{ backgroundColor: accent }} className="h-1.5 w-full" aria-hidden />
                         <div className="p-5">
                           <h3 className="font-head text-ink text-lg font-semibold">{profile.label}</h3>
@@ -873,7 +873,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                             {profile.party} · {profile.nights} {profile.nights === 1 ? "night" : "nights"} · {profile.channel}
                           </p>
                           {page ? (
-                            <ul className="divide-hairline/15 mt-4 divide-y">
+                            <ul className="divide-hairline mt-4 divide-y">
                               {(page.picks ?? []).map((pick) => {
                                 const pkg = packageById.get(pick.packageId);
                                 const price = pkg?.priceMin ?? null;
@@ -942,7 +942,7 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
               <div className="flex flex-col items-start gap-3 text-sm font-normal text-white sm:items-end">
                 <Link href="/" className="hover:text-brand">How it works</Link>
                 <Link href="/#what-you-get" className="hover:text-brand">What you get</Link>
-                <Link href="/remove" className="text-hairline hover:underline">Remove my report</Link>
+                <Link href="/remove" className="text-primary hover:underline">Remove my report</Link>
               </div>
             </div>
             <div className="mt-10 border-t border-white/10 pt-6">

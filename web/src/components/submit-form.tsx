@@ -19,7 +19,7 @@ export function SubmitForm() {
           required
           placeholder="https://yourhotel.com"
           aria-label="Your hotel's website"
-          className="border-input text-ink placeholder:text-muted-foreground h-14 flex-1 border bg-white px-4 text-base font-normal transition-colors focus:border-hairline focus:shadow-upl-md focus:outline-none"
+          className="border-input text-ink placeholder:text-muted-foreground h-14 flex-1 border bg-white px-4 text-base font-normal transition-colors focus:border-primary focus:shadow-upl-md focus:outline-none"
         />
         {TURNSTILE_SITE_KEY ? (
           <div className="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="light" />

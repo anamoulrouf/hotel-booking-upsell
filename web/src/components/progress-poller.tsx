@@ -99,7 +99,7 @@ export function ProgressPoller({
               <span
                 aria-hidden
                 className={`inline-block h-2 w-2 ${
-                  st === "done" ? "bg-success" : active ? "bg-hairline animate-pulse" : st === "skipped" ? "bg-border" : "bg-border/50"
+                  st === "done" ? "bg-success" : active ? "bg-primary animate-pulse" : st === "skipped" ? "bg-border" : "bg-border/50"
                 }`}
               />
               <span className={st === "pending" ? "text-muted-foreground" : "text-ink font-normal"}>
