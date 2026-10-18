@@ -536,14 +536,10 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
               </section>
             )}
 
-            {/* 3. Your numbers, live — unlock-gated ROI editor (brief §7) */}
+            {/* 3. Unlock-gated ROI editor (brief §7) — the panel carries its own
+                headline; the Figma frame has no section heading here */}
             <section className="pt-16" data-testid="roi-section" id="unlock">
-              <SectionHead
-                title="Your numbers, live"
-                sub="Edit rooms, occupancy and stay length — payback and the 3-year math recompute instantly."
-              />
-              <div className="pt-5">
-                {row.unlocked ? (
+              {row.unlocked ? (
                   <div className="bg-card border-hairline shadow-upl-sm border p-5 md:p-6">
                     <RoiEditor
                       token={token}
@@ -610,7 +606,6 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                     </div>
                   </div>
                 )}
-              </div>
             </section>
 
             {/* 4. What we found — six horizontal score cards */}
@@ -755,16 +750,12 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
               )}
             </section>
 
-            {/* 7. Packages you could sell — unlock-gated ideas (brief §8) */}
+            {/* 7. Packages you could sell — unlock-gated ideas (brief §8);
+                no section heading, matching the Figma frame */}
             <section className="pt-16" data-testid="ideas-section">
-              <div className="pt-5">
-                {row.unlocked ? (
-                  <>
-                    <SectionHead
-                      title="Packages you could sell"
-                      sub="Drafted for your hotel type and location — never contradicting what we found. Prices are suggested, set your own."
-                    />
-                    <div className="grid gap-4 pt-5 md:grid-cols-2 lg:grid-cols-3">
+              {row.unlocked ? (
+                <>
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                       {suggestedPackages.map((idea) => (
                         <div key={idea.name} className="bg-card border-hairline shadow-upl-sm border p-5">
                           <div className="flex items-baseline justify-between gap-3">
@@ -850,7 +841,6 @@ export default async function ReportPage({ params }: { params: Promise<{ token: 
                     </div>
                   </div>
                 )}
-              </div>
             </section>
 
             {/* 8. Guest pages — unlocked sample panels (brief §6) */}
