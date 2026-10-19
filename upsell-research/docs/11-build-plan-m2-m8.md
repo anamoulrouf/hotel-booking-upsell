@@ -24,17 +24,29 @@ Targets (brief §13): 300 reports in 60 days · ≥30% preview→unlock · ≥5%
 - Recorded decision: pulling unlock into M5 would capture leads ~a week earlier still, but expands
   the deploy-slice milestone; kept in M6 (CEO call, 7 Oct 2026)
 
-## Where we are (7 Oct 2026)
+## Where we are (19 Oct 2026)
 
 | Milestone | State |
 |---|---|
 | M0 scaffold | ✅ |
 | M1 foundation | ✅ landing, submit action, Inngest, status polling, progress page, DB events |
-| M1.5 preview slice | ✅ fetch-crawl ≤6 pages, JSON-LD facts, fingerprints, heuristic packages, score + missed revenue, report UI (light doc layout) |
-| M4 engines | ~90% — score/grade/capture/bands/revenue + golden tests; `mobile: null` input remains until M2 |
+| M1.5 preview slice | ✅ |
+| M2 worker | ✅ code + E2E — `/crawl-core` `/crawl-ext` `/mobile-check` HMAC'd; E2E boots the worker (`WORKER_URL`) and scores mobile (reports /100). Fly deploy + prod `WORKER_URL` remain (operator) |
+| M3 extraction | ✅ code — haiku facts/packages with zod + sanitize, OTA search → nightly rate, heuristic fallback; needs `ANTHROPIC_API_KEY`/`TAVILY_API_KEY` in prod to activate (operator) |
+| M4 engines | ✅ score/grade/capture/bands/revenue + golden tests; mobile area scored via M2 |
+| M5 slice | ✅ deployed previously (Vercel project exists; see deploy notes below) |
+| M6 unlock lite | ✅ collapsed gate, leads upsert, idempotent replay (E2E D16–D20) |
+| M7 guest pages + PDF + delivery | ✅ three sample panels, brand accent, disabled payment pair; delivery chain fires on first unlock. Scheduler still mailto fallback until `schedulerUrl` is set |
+| M8 funnel + hardening | ✅ funnel events ordered (I44), metrics route, rate limits, removal (H39) |
 
-Design system applied app-wide ([10-DESIGN.md](10-DESIGN.md)); report page simplified to the
-document layout. Suite green: lint, typecheck, 13 unit tests, smoke E2E A1.
+Suite green: typecheck (5 pkgs), lint, 53 unit tests, 20 E2E (C/D/E/F/H/I cases) against
+the live worker path. Report UI rebuilt from the Booking-Upsell Figma (31:1412) and
+rebranded to the Upsell-experience tokens ([10-DESIGN.md](10-DESIGN.md) v2).
+
+**Deploy notes (remaining, operator):** Fly `deploy` for the worker + `WORKER_URL`/
+`WORKER_SHARED_SECRET` on Vercel; `ANTHROPIC_API_KEY` + `TAVILY_API_KEY` to activate M3
+extraction in prod; scheduler URL for `call_booked`; Inngest + Resend + Turnstile keys
+per [12-deploy-runbook.md](12-deploy-runbook.md).
 
 ---
 

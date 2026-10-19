@@ -23,12 +23,14 @@ export async function mobileCheck(req: MobileRequest): Promise<MobileResult> {
       const resp = await page.goto(req.url, { waitUntil: "load", timeout: 15_000 });
       status = resp?.status() ?? null;
       await page.waitForTimeout(150);
-      // string-form evaluate: the body runs in the browser (worker tsconfig has no DOM lib)
+      // string-form evaluate as IIFE expressions: the body runs in the browser
+      // (worker tsconfig has no DOM lib); plain arrow strings are not invoked
+      // by every playwright version, which left these undefined
       horizontalOverflow = await page.evaluate<boolean>(
-        "() => document.documentElement.scrollWidth - document.documentElement.clientWidth > 2",
+        "(() => document.documentElement.scrollWidth - document.documentElement.clientWidth > 2)()",
       );
       tapTargetsOk = await page.evaluate<boolean>(`
-        () => {
+        (() => {
           const els = Array.from(document.querySelectorAll("a,button")).slice(0, 30);
           if (els.length === 0) return false;
           const small = els.filter((el) => {
@@ -36,7 +38,7 @@ export async function mobileCheck(req: MobileRequest): Promise<MobileResult> {
             return r.width > 0 && (r.width < 40 || r.height < 40);
           });
           return small.length / els.length < 0.3;
-        }
+        })()
       `);
     } catch {
       /* keep conservative defaults */
